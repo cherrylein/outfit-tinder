@@ -637,7 +637,7 @@
       <div>
         <div class="title-row">
           <h1>Outfit Auswahl</h1>
-          <span class="version-badge">v1.4 Mobile Light</span>
+          <span class="version-badge">v1.5 Stable Detail</span>
         </div>
         <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Alles wird lokal im Browser gespeichert.</div>
       </div>
@@ -732,6 +732,7 @@
     const tinderModal = document.getElementById("tinderModal");
     const tinderStatus = document.getElementById("tinderStatus");
     const tinderStage = document.getElementById("tinderStage");
+    let detailReady = false;
 
     function loadReviews() {
       try {
@@ -849,47 +850,76 @@
       const comments = outfits.filter(entry => reviewFor(entry.id).comment.trim()).length;
       const tinderStars = review.tinderStars || 0;
 
+      if (!detailReady) initDetail();
+
+      const preview = detail.querySelector("#detailPreview");
+      if (preview.dataset.file !== item.file) {
+        preview.removeAttribute("src");
+        preview.alt = item.name;
+        preview.dataset.file = item.file;
+        window.requestAnimationFrame(() => {
+          preview.src = item.file;
+        });
+      }
+
+      detail.querySelector("#detailTitle").textContent = `${item.id}. ${item.name}`;
+      detail.querySelector("#detailDesc").textContent = `${item.note}${tinderStars ? " Tinder Sterne: " + tinderStars + "." : ""}`;
+      detail.querySelector("#summaryRated").textContent = rated;
+      detail.querySelector("#summaryFavs").textContent = favs;
+      detail.querySelector("#summaryComments").textContent = comments;
+      detail.querySelector("#favorite").checked = Boolean(review.favorite);
+
+      detail.querySelectorAll("[data-rating]").forEach(button => {
+        button.classList.toggle("active", review.rating === Number(button.dataset.rating));
+      });
+
+      const comment = detail.querySelector("#comment");
+      if (document.activeElement !== comment) comment.value = review.comment || "";
+    }
+
+    function initDetail() {
+      detailReady = true;
       detail.innerHTML = `
         <div class="preview-wrap">
-          <img class="preview" src="${item.file}" alt="${item.name}">
+          <img class="preview" id="detailPreview" alt="" loading="eager" decoding="async">
         </div>
         <div class="review">
-          <button class="detail-close" id="closeDetail">Zurueck zur Uebersicht</button>
+          <button class="detail-close" id="closeDetail" type="button">Zurueck zur Uebersicht</button>
           <div class="detail-nav">
             <button id="prevDetail" type="button">Vorheriges</button>
             <button id="nextDetail" type="button">Naechstes Outfit</button>
           </div>
-          <h2>${item.id}. ${item.name}</h2>
-          <div class="desc">${item.note}${tinderStars ? " Tinder Sterne: " + tinderStars + "." : ""}</div>
+          <h2 id="detailTitle"></h2>
+          <div class="desc" id="detailDesc"></div>
 
           <div class="summary">
-            <div><strong>${rated}</strong>bewertet</div>
-            <div><strong>${favs}</strong>Favoriten</div>
-            <div><strong>${comments}</strong>Kommentare</div>
+            <div><strong id="summaryRated">0</strong>bewertet</div>
+            <div><strong id="summaryFavs">0</strong>Favoriten</div>
+            <div><strong id="summaryComments">0</strong>Kommentare</div>
           </div>
 
           <div class="field">
             <label>Bewertung</label>
             <div class="rating">
-              ${[1, 2, 3, 4, 5].map(score => `<button data-rating="${score}" class="${review.rating === score ? "active" : ""}">${score}</button>`).join("")}
+              ${[1, 2, 3, 4, 5].map(score => `<button type="button" data-rating="${score}">${score}</button>`).join("")}
             </div>
           </div>
 
           <div class="field toggle-row">
-            <input id="favorite" type="checkbox" ${review.favorite ? "checked" : ""}>
+            <input id="favorite" type="checkbox">
             <label for="favorite" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)">Als Favorit markieren</label>
           </div>
 
           <div class="field">
             <label>Kommentar</label>
-            <textarea id="comment" placeholder="Was funktioniert? Was ist zu viel? Was muesste geaendert werden?">${escapeHtml(review.comment)}</textarea>
+            <textarea id="comment" placeholder="Was funktioniert? Was ist zu viel? Was muesste geaendert werden?"></textarea>
           </div>
         </div>
       `;
 
       detail.querySelectorAll("[data-rating]").forEach(button => {
         button.addEventListener("click", () => {
-          setReview(item.id, { rating: Number(button.dataset.rating) });
+          setReview(selectedId, { rating: Number(button.dataset.rating) });
         });
       });
 
@@ -898,11 +928,11 @@
       detail.querySelector("#nextDetail").addEventListener("click", () => moveDetail(1));
 
       detail.querySelector("#favorite").addEventListener("change", event => {
-        setReview(item.id, { favorite: event.target.checked });
+        setReview(selectedId, { favorite: event.target.checked });
       });
 
       detail.querySelector("#comment").addEventListener("input", event => {
-        setReview(item.id, { comment: event.target.value }, false);
+        setReview(selectedId, { comment: event.target.value }, false);
       });
     }
 
