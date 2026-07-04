@@ -304,8 +304,13 @@
       background: rgba(255, 255, 255, 0.6);
     }
 
-    body.tinder-open {
+    body.tinder-open,
+    body.detail-open {
       overflow: hidden;
+    }
+
+    .detail-close {
+      display: none;
     }
 
     .tinder-modal {
@@ -513,9 +518,44 @@
       }
 
       aside {
-        position: static;
+        position: fixed;
+        inset: 0;
+        z-index: 90;
+        display: none;
+        grid-template-rows: minmax(0, 1fr) auto;
         max-height: none;
-        margin-top: 18px;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+      }
+
+      body.detail-open aside {
+        display: grid;
+      }
+
+      .preview-wrap {
+        min-height: 0;
+      }
+
+      .preview {
+        max-height: 54dvh;
+        object-fit: contain;
+        background: #ebe3dc;
+      }
+
+      .review {
+        max-height: 46dvh;
+        overflow: auto;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+      }
+
+      .detail-close {
+        display: block;
+        width: 100%;
+        margin-bottom: 12px;
+        background: var(--ink);
+        border-color: var(--ink);
+        color: #fff;
       }
 
       .tinder-top {
@@ -596,51 +636,59 @@
 
   <script>
     const outfits = [
-      { id: "00", file: "images/00-armor-outfit-dark.png", name: "Armor Outfit Dunkel", group: "Armor", note: "Erster Panzerlook im dunklen Licht." },
-      { id: "01", file: "images/01-armor-outfit-deep-v.png", name: "Armor Deep V", group: "Armor", note: "Mehr Dekollete unter dem Schulterpanzer." },
-      { id: "02", file: "images/02-armor-outfit-bright.png", name: "Armor Kataloglicht", group: "Armor", note: "Helleres Licht, Panzer und Outfit besser lesbar." },
-      { id: "03", file: "images/03-armor-skirt-boots.png", name: "Armor + Rock", group: "Armor", note: "Schulterpanzer mit Rock und Overknees." },
-      { id: "04", file: "images/04-skirt-sleeves-fabric-boots.png", name: "Rock + Stoffstiefel", group: "Basis", note: "Ohne Panzer, noch mit Aermeln." },
-      { id: "05", file: "images/05-sleeveless-high-heel-boots.png", name: "Sleeveless Test", group: "Basis", note: "Aermellos, aber noch mit hohem Absatz." },
-      { id: "06", file: "images/06-base-flat-boots.png", name: "Basis Flat Boots", group: "Basis", note: "Fixe Stoff-Overknees mit flachem Absatz." },
-      { id: "07", file: "images/07-normal-ribbed-a-line.png", name: "Normal Ribbed A-Line", group: "Normal", note: "Cleaner Rollkragen-/A-Linien-Look." },
-      { id: "08", file: "images/08-normal-wrap-skirt.png", name: "Normal Wrap Skirt", group: "Normal", note: "Wickelrock und Square-Neck." },
-      { id: "09", file: "images/09-normal-knit-dress.png", name: "Normal Knit Dress", group: "Normal", note: "Kurzes Strickkleid mit Keyhole." },
-      { id: "10", file: "images/10-sexy-draped-wrap.png", name: "Sexy Draped Wrap", group: "Sexy", note: "Drapierter Wickel-Look." },
-      { id: "11", file: "images/11-sexy-one-shoulder.png", name: "Sexy One Shoulder", group: "Sexy", note: "Asymmetrische Schulter und Schlitz." },
-      { id: "12", file: "images/12-sexy-sweetheart-cutout.png", name: "Sexy Sweetheart Cutout", group: "Sexy", note: "Sweetheart-Top mit Cutout." },
-      { id: "13", file: "images/13-more-sexy-halter-crop.png", name: "Halter Crop", group: "Mehr Sexy", note: "Crop Top und Micro-Mini." },
-      { id: "14", file: "images/14-more-sexy-bandeau-cutout.png", name: "Bandeau Cutout", group: "Mehr Sexy", note: "Bandeau und asymmetrischer Cutout." },
-      { id: "15", file: "images/15-more-sexy-deep-body-wrap.png", name: "Deep Body Wrap", group: "Mehr Sexy", note: "Tiefer Body plus Wickelteil." },
-      { id: "16", file: "images/16-extreme-harness-wrap.png", name: "Harness Wrap", group: "Extrem", note: "Erster extremer Harness-Wrap-Look." },
-      { id: "17", file: "images/17-bold-plunging-body.png", name: "Plunging Body", group: "Bold", note: "Sehr tiefer Body ohne Rock." },
-      { id: "18", file: "images/18-bold-hotpants-bra-layer.png", name: "Hotpants Bra Layer", group: "Bold", note: "Hotpants, Bra und transparenter Layer." },
-      { id: "19", file: "images/19-bold-underboob-paperbag.png", name: "Underboob Paperbag", group: "Underboob", note: "Underboob-Crop und Paperbag-Shorts." },
-      { id: "20", file: "images/20-bold-corset-body.png", name: "Corset Body", group: "Body", note: "Lingerie-inspirierter Corset-Body." },
-      { id: "21", file: "images/21-bold-bra-boxer-shorts.png", name: "Bra + Boxer Shorts", group: "Bold", note: "Lockerere Shorts und Bra." },
-      { id: "22", file: "images/22-bold-asym-romper.png", name: "Asym Romper", group: "Bold", note: "Asymmetrischer Romper mit Side-Cutout." },
-      { id: "23", file: "images/23-bold-mesh-overlay.png", name: "Mesh Overlay", group: "Bold", note: "Mesh-Minikleid ueber Bra/Briefs." },
-      { id: "24", file: "images/24-bold-deep-v-shorts.png", name: "Deep V + Shorts", group: "Bold", note: "Super Deep V mit Micro-Shorts." },
-      { id: "25", file: "images/25-bold-strappy-hotpants.png", name: "Strappy Hotpants", group: "Bold", note: "Grafisches Strap-Set mit Hotpants." },
-      { id: "26", file: "images/26-bold-extreme-sci-fi-festival.png", name: "Sci-Fi Festival Extreme", group: "Extrem", note: "Radikaler Stoff-Harness-Festival-Look." },
-      { id: "27", file: "images/27-underboob-paperbag.png", name: "Underboob Paperbag V2", group: "Underboob", note: "Tragbare Underboob-Variante." },
-      { id: "28", file: "images/28-underboob-halter-hotpants.png", name: "Underboob Halter", group: "Underboob", note: "Halter-Top mit Hotpants." },
-      { id: "29", file: "images/29-underboob-asym-panel.png", name: "Underboob Asym Panel", group: "Underboob", note: "Asymmetrisches Panel, gut panzerkompatibel." },
-      { id: "30", file: "images/30-underboob-cargo.png", name: "Underboob Cargo", group: "Underboob", note: "Utility/Festival mit Cargo-Shorts." },
-      { id: "31", file: "images/31-underboob-strappy-cutout.png", name: "Underboob Strappy Cutout", group: "Underboob", note: "Mutigste Underboob-Variante." },
-      { id: "32", file: "images/32-bh-triangle-mini-skirt.png", name: "Triangle BH + Mini", group: "BH/Bikini", note: "Triangle-BH mit cleanem Minirock." },
-      { id: "33", file: "images/33-bh-sporty-hotpants.png", name: "Sport BH + Hotpants", group: "BH/Bikini", note: "Sportlicher BH mit High-Waist-Hotpants." },
-      { id: "34", file: "images/34-bikini-sheer-shirt.png", name: "Bikini + Sheer Shirt", group: "BH/Bikini", note: "Kompletter Bikini mit transparenter Stofflage." },
-      { id: "35", file: "images/35-bra-wrap-skirt.png", name: "Bra + Wrap Skirt", group: "BH/Bikini", note: "Underwire-BH mit asymmetrischem Wickelrock." },
-      { id: "36", file: "images/36-bandeau-shorts.png", name: "Bandeau + Shorts", group: "BH/Bikini", note: "Bandeau-Bikini-Top mit High-Waist-Shorts." },
-      { id: "37", file: "images/37-bikini-mesh-wrap.png", name: "Bikini Mesh Wrap", group: "BH/Bikini", note: "Mutiger Bikini-Look mit Mesh-Wrap." }
+      { id: "00", file: "images/00-armor-outfit-dark.jpg", name: "Armor Outfit Dunkel", group: "Armor", note: "Erster Panzerlook im dunklen Licht." },
+      { id: "01", file: "images/01-armor-outfit-deep-v.jpg", name: "Armor Deep V", group: "Armor", note: "Mehr Dekollete unter dem Schulterpanzer." },
+      { id: "02", file: "images/02-armor-outfit-bright.jpg", name: "Armor Kataloglicht", group: "Armor", note: "Helleres Licht, Panzer und Outfit besser lesbar." },
+      { id: "03", file: "images/03-armor-skirt-boots.jpg", name: "Armor + Rock", group: "Armor", note: "Schulterpanzer mit Rock und Overknees." },
+      { id: "04", file: "images/04-skirt-sleeves-fabric-boots.jpg", name: "Rock + Stoffstiefel", group: "Basis", note: "Ohne Panzer, noch mit Aermeln." },
+      { id: "05", file: "images/05-sleeveless-high-heel-boots.jpg", name: "Sleeveless Test", group: "Basis", note: "Aermellos, aber noch mit hohem Absatz." },
+      { id: "06", file: "images/06-base-flat-boots.jpg", name: "Basis Flat Boots", group: "Basis", note: "Fixe Stoff-Overknees mit flachem Absatz." },
+      { id: "07", file: "images/07-normal-ribbed-a-line.jpg", name: "Normal Ribbed A-Line", group: "Normal", note: "Cleaner Rollkragen-/A-Linien-Look." },
+      { id: "08", file: "images/08-normal-wrap-skirt.jpg", name: "Normal Wrap Skirt", group: "Normal", note: "Wickelrock und Square-Neck." },
+      { id: "09", file: "images/09-normal-knit-dress.jpg", name: "Normal Knit Dress", group: "Normal", note: "Kurzes Strickkleid mit Keyhole." },
+      { id: "10", file: "images/10-sexy-draped-wrap.jpg", name: "Sexy Draped Wrap", group: "Sexy", note: "Drapierter Wickel-Look." },
+      { id: "11", file: "images/11-sexy-one-shoulder.jpg", name: "Sexy One Shoulder", group: "Sexy", note: "Asymmetrische Schulter und Schlitz." },
+      { id: "12", file: "images/12-sexy-sweetheart-cutout.jpg", name: "Sexy Sweetheart Cutout", group: "Sexy", note: "Sweetheart-Top mit Cutout." },
+      { id: "13", file: "images/13-more-sexy-halter-crop.jpg", name: "Halter Crop", group: "Mehr Sexy", note: "Crop Top und Micro-Mini." },
+      { id: "14", file: "images/14-more-sexy-bandeau-cutout.jpg", name: "Bandeau Cutout", group: "Mehr Sexy", note: "Bandeau und asymmetrischer Cutout." },
+      { id: "15", file: "images/15-more-sexy-deep-body-wrap.jpg", name: "Deep Body Wrap", group: "Mehr Sexy", note: "Tiefer Body plus Wickelteil." },
+      { id: "16", file: "images/16-extreme-harness-wrap.jpg", name: "Harness Wrap", group: "Extrem", note: "Erster extremer Harness-Wrap-Look." },
+      { id: "17", file: "images/17-bold-plunging-body.jpg", name: "Plunging Body", group: "Bold", note: "Sehr tiefer Body ohne Rock." },
+      { id: "18", file: "images/18-bold-hotpants-bra-layer.jpg", name: "Hotpants Bra Layer", group: "Bold", note: "Hotpants, Bra und transparenter Layer." },
+      { id: "19", file: "images/19-bold-underboob-paperbag.jpg", name: "Underboob Paperbag", group: "Underboob", note: "Underboob-Crop und Paperbag-Shorts." },
+      { id: "20", file: "images/20-bold-corset-body.jpg", name: "Corset Body", group: "Body", note: "Lingerie-inspirierter Corset-Body." },
+      { id: "21", file: "images/21-bold-bra-boxer-shorts.jpg", name: "Bra + Boxer Shorts", group: "Bold", note: "Lockerere Shorts und Bra." },
+      { id: "22", file: "images/22-bold-asym-romper.jpg", name: "Asym Romper", group: "Bold", note: "Asymmetrischer Romper mit Side-Cutout." },
+      { id: "23", file: "images/23-bold-mesh-overlay.jpg", name: "Mesh Overlay", group: "Bold", note: "Mesh-Minikleid ueber Bra/Briefs." },
+      { id: "24", file: "images/24-bold-deep-v-shorts.jpg", name: "Deep V + Shorts", group: "Bold", note: "Super Deep V mit Micro-Shorts." },
+      { id: "25", file: "images/25-bold-strappy-hotpants.jpg", name: "Strappy Hotpants", group: "Bold", note: "Grafisches Strap-Set mit Hotpants." },
+      { id: "26", file: "images/26-bold-extreme-sci-fi-festival.jpg", name: "Sci-Fi Festival Extreme", group: "Extrem", note: "Radikaler Stoff-Harness-Festival-Look." },
+      { id: "27", file: "images/27-underboob-paperbag.jpg", name: "Underboob Paperbag V2", group: "Underboob", note: "Tragbare Underboob-Variante." },
+      { id: "28", file: "images/28-underboob-halter-hotpants.jpg", name: "Underboob Halter", group: "Underboob", note: "Halter-Top mit Hotpants." },
+      { id: "29", file: "images/29-underboob-asym-panel.jpg", name: "Underboob Asym Panel", group: "Underboob", note: "Asymmetrisches Panel, gut panzerkompatibel." },
+      { id: "30", file: "images/30-underboob-cargo.jpg", name: "Underboob Cargo", group: "Underboob", note: "Utility/Festival mit Cargo-Shorts." },
+      { id: "31", file: "images/31-underboob-strappy-cutout.jpg", name: "Underboob Strappy Cutout", group: "Underboob", note: "Mutigste Underboob-Variante." },
+      { id: "32", file: "images/32-bh-triangle-mini-skirt.jpg", name: "Triangle BH + Mini", group: "BH/Bikini", note: "Triangle-BH mit cleanem Minirock." },
+      { id: "33", file: "images/33-bh-sporty-hotpants.jpg", name: "Sport BH + Hotpants", group: "BH/Bikini", note: "Sportlicher BH mit High-Waist-Hotpants." },
+      { id: "34", file: "images/34-bikini-sheer-shirt.jpg", name: "Bikini + Sheer Shirt", group: "BH/Bikini", note: "Kompletter Bikini mit transparenter Stofflage." },
+      { id: "35", file: "images/35-bra-wrap-skirt.jpg", name: "Bra + Wrap Skirt", group: "BH/Bikini", note: "Underwire-BH mit asymmetrischem Wickelrock." },
+      { id: "36", file: "images/36-bandeau-shorts.jpg", name: "Bandeau + Shorts", group: "BH/Bikini", note: "Bandeau-Bikini-Top mit High-Waist-Shorts." },
+      { id: "37", file: "images/37-bikini-mesh-wrap.jpg", name: "Bikini Mesh Wrap", group: "BH/Bikini", note: "Mutiger Bikini-Look mit Mesh-Wrap." }
     ];
 
     const storeKey = "outfit-selection-v1";
     let selectedId = outfits[0].id;
     let activeGroup = "Alle";
     let reviews = loadReviews();
-    let tinder = { active: false, round: 1, pool: [], index: 0, nextPool: [], history: [], animating: false };
+    let tinder = {
+      active: false,
+      round: 1,
+      pool: [],
+      index: 0,
+      nextPool: [],
+      history: [],
+      animating: false
+    };
 
     const grid = document.getElementById("grid");
     const detail = document.getElementById("detail");
@@ -649,11 +697,25 @@
     const tinderStatus = document.getElementById("tinderStatus");
     const tinderStage = document.getElementById("tinderStage");
 
-    function loadReviews() { try { return JSON.parse(localStorage.getItem(storeKey)) || {}; } catch { return {}; } }
-    function saveReviews() { localStorage.setItem(storeKey, JSON.stringify(reviews)); }
-    function reviewFor(id) { return reviews[id] || { rating: 0, favorite: false, comment: "", tinderStars: 0, rejected: false }; }
-    function groups() { return ["Alle", ...Array.from(new Set(outfits.map(item => item.group)))]; }
-    function filteredOutfits() { return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup); }
+    function loadReviews() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveReviews() {
+      localStorage.setItem(storeKey, JSON.stringify(reviews));
+    }
+
+    function reviewFor(id) {
+      return reviews[id] || { rating: 0, favorite: false, comment: "", tinderStars: 0, rejected: false };
+    }
+
+    function groups() {
+      return ["Alle", ...Array.from(new Set(outfits.map(item => item.group)))];
+    }
 
     function renderFilters() {
       filters.innerHTML = "";
@@ -671,16 +733,38 @@
       });
     }
 
+    function filteredOutfits() {
+      return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup);
+    }
+
     function renderGrid() {
       const items = filteredOutfits();
       grid.innerHTML = "";
-      if (!items.length) { grid.innerHTML = '<div class="empty">Keine Designs in diesem Filter.</div>'; return; }
+      if (!items.length) {
+        grid.innerHTML = '<div class="empty">Keine Designs in diesem Filter.</div>';
+        return;
+      }
       items.forEach(item => {
         const review = reviewFor(item.id);
         const card = document.createElement("article");
         card.className = "card" + (item.id === selectedId ? " selected" : "");
-        card.addEventListener("click", () => { selectedId = item.id; render(); });
-        card.innerHTML = `<img class="thumb" src="${item.file}" alt="${item.name}"><div class="meta"><div class="name">${item.id}. ${item.name}</div><div class="tagline">${item.group}</div><div class="scoreline"><span>${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}</span><span class="${review.favorite ? "fav" : ""}">${review.favorite ? "Favorit" : ""}</span></div></div>`;
+        card.addEventListener("click", () => {
+          selectedId = item.id;
+          if (isMobileLayout()) document.body.classList.add("detail-open");
+          render();
+        });
+
+        card.innerHTML = `
+          <img class="thumb" src="${item.file}" alt="${item.name}">
+          <div class="meta">
+            <div class="name">${item.id}. ${item.name}</div>
+            <div class="tagline">${item.group}</div>
+            <div class="scoreline">
+              <span>${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}</span>
+              <span class="${review.favorite ? "fav" : ""}">${review.favorite ? "Favorit" : ""}</span>
+            </div>
+          </div>
+        `;
         grid.appendChild(card);
       });
     }
@@ -692,43 +776,276 @@
       const favs = outfits.filter(entry => reviewFor(entry.id).favorite).length;
       const comments = outfits.filter(entry => reviewFor(entry.id).comment.trim()).length;
       const tinderStars = review.tinderStars || 0;
-      detail.innerHTML = `<div class="preview-wrap"><img class="preview" src="${item.file}" alt="${item.name}"></div><div class="review"><h2>${item.id}. ${item.name}</h2><div class="desc">${item.note}${tinderStars ? " Tinder Sterne: " + tinderStars + "." : ""}</div><div class="summary"><div><strong>${rated}</strong>bewertet</div><div><strong>${favs}</strong>Favoriten</div><div><strong>${comments}</strong>Kommentare</div></div><div class="field"><label>Bewertung</label><div class="rating">${[1,2,3,4,5].map(score => `<button data-rating="${score}" class="${review.rating === score ? "active" : ""}">${score}</button>`).join("")}</div></div><div class="field toggle-row"><input id="favorite" type="checkbox" ${review.favorite ? "checked" : ""}><label for="favorite" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)">Als Favorit markieren</label></div><div class="field"><label>Kommentar</label><textarea id="comment" placeholder="Was funktioniert? Was ist zu viel? Was muesste geaendert werden?">${escapeHtml(review.comment)}</textarea></div></div>`;
-      detail.querySelectorAll("[data-rating]").forEach(button => button.addEventListener("click", () => setReview(item.id, { rating: Number(button.dataset.rating) })));
-      detail.querySelector("#favorite").addEventListener("change", event => setReview(item.id, { favorite: event.target.checked }));
-      detail.querySelector("#comment").addEventListener("input", event => { setReview(item.id, { comment: event.target.value }, false); renderGrid(); });
+
+      detail.innerHTML = `
+        <div class="preview-wrap">
+          <img class="preview" src="${item.file}" alt="${item.name}">
+        </div>
+        <div class="review">
+          <button class="detail-close" id="closeDetail">Zurueck zur Uebersicht</button>
+          <h2>${item.id}. ${item.name}</h2>
+          <div class="desc">${item.note}${tinderStars ? " Tinder Sterne: " + tinderStars + "." : ""}</div>
+
+          <div class="summary">
+            <div><strong>${rated}</strong>bewertet</div>
+            <div><strong>${favs}</strong>Favoriten</div>
+            <div><strong>${comments}</strong>Kommentare</div>
+          </div>
+
+          <div class="field">
+            <label>Bewertung</label>
+            <div class="rating">
+              ${[1, 2, 3, 4, 5].map(score => `<button data-rating="${score}" class="${review.rating === score ? "active" : ""}">${score}</button>`).join("")}
+            </div>
+          </div>
+
+          <div class="field toggle-row">
+            <input id="favorite" type="checkbox" ${review.favorite ? "checked" : ""}>
+            <label for="favorite" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)">Als Favorit markieren</label>
+          </div>
+
+          <div class="field">
+            <label>Kommentar</label>
+            <textarea id="comment" placeholder="Was funktioniert? Was ist zu viel? Was muesste geaendert werden?">${escapeHtml(review.comment)}</textarea>
+          </div>
+        </div>
+      `;
+
+      detail.querySelectorAll("[data-rating]").forEach(button => {
+        button.addEventListener("click", () => {
+          setReview(item.id, { rating: Number(button.dataset.rating) });
+        });
+      });
+
+      detail.querySelector("#closeDetail").addEventListener("click", closeDetail);
+
+      detail.querySelector("#favorite").addEventListener("change", event => {
+        setReview(item.id, { favorite: event.target.checked });
+      });
+
+      detail.querySelector("#comment").addEventListener("input", event => {
+        setReview(item.id, { comment: event.target.value }, false);
+        renderGrid();
+      });
     }
 
-    function setReview(id, patch, rerender = true) { reviews[id] = { ...reviewFor(id), ...patch }; saveReviews(); if (rerender) render(); }
-    function escapeHtml(value) { return String(value || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"); }
+    function setReview(id, patch, rerender = true) {
+      reviews[id] = { ...reviewFor(id), ...patch };
+      saveReviews();
+      if (rerender) render();
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
 
     function exportRows() {
-      return outfits.map(item => { const review = reviewFor(item.id); return { id: item.id, name: item.name, group: item.group, file: item.file, rating: review.rating || "", tinderStars: review.tinderStars || 0, rejectedInTinder: review.rejected ? "yes" : "no", favorite: review.favorite ? "yes" : "no", comment: review.comment || "" }; });
+      return outfits.map(item => {
+        const review = reviewFor(item.id);
+        return {
+          id: item.id,
+          name: item.name,
+          group: item.group,
+          file: item.file,
+          rating: review.rating || "",
+          tinderStars: review.tinderStars || 0,
+          rejectedInTinder: review.rejected ? "yes" : "no",
+          favorite: review.favorite ? "yes" : "no",
+          comment: review.comment || ""
+        };
+      });
     }
-    function download(filename, mime, content) { const blob = new Blob([content], { type: mime }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = filename; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url); }
-    function toCsv(rows) { const headers = Object.keys(rows[0]); const escapeCell = value => `"${String(value).replaceAll('"', '""')}"`; return [headers.join(","), ...rows.map(row => headers.map(header => escapeCell(row[header])).join(","))].join("\n"); }
 
-    document.getElementById("exportJson").addEventListener("click", () => download("outfit-auswahl-bewertungen.json", "application/json", JSON.stringify(exportRows(), null, 2)));
-    document.getElementById("exportCsv").addEventListener("click", () => download("outfit-auswahl-bewertungen.csv", "text/csv", toCsv(exportRows())));
-    document.getElementById("clearData").addEventListener("click", () => { if (!confirm("Alle lokalen Bewertungen und Kommentare loeschen?")) return; reviews = {}; saveReviews(); render(); });
+    function download(filename, mime, content) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function toCsv(rows) {
+      const headers = Object.keys(rows[0]);
+      const escapeCell = value => `"${String(value).replaceAll('"', '""')}"`;
+      return [headers.join(","), ...rows.map(row => headers.map(header => escapeCell(row[header])).join(","))].join("\n");
+    }
+
+    document.getElementById("exportJson").addEventListener("click", () => {
+      download("outfit-auswahl-bewertungen.json", "application/json", JSON.stringify(exportRows(), null, 2));
+    });
+
+    document.getElementById("exportCsv").addEventListener("click", () => {
+      download("outfit-auswahl-bewertungen.csv", "text/csv", toCsv(exportRows()));
+    });
+
+    document.getElementById("clearData").addEventListener("click", () => {
+      if (!confirm("Alle lokalen Bewertungen und Kommentare loeschen?")) return;
+      reviews = {};
+      saveReviews();
+      render();
+    });
+
     document.getElementById("startTinder").addEventListener("click", startTinder);
     document.getElementById("closeTinder").addEventListener("click", closeTinder);
-    document.addEventListener("keydown", event => { if (!tinder.active) return; if (event.key === "Escape") closeTinder(); if (event.key === "ArrowLeft") rejectCurrent(); if (event.key === "ArrowRight") acceptCurrent(); });
 
-    function startTinder() { tinder = { active: true, round: 1, pool: filteredOutfits().map(item => item.id), index: 0, nextPool: [], history: [], animating: false }; document.body.classList.add("tinder-open"); tinderModal.setAttribute("aria-hidden", "false"); renderTinder(); }
-    function closeTinder() { tinder.active = false; document.body.classList.remove("tinder-open"); tinderModal.setAttribute("aria-hidden", "true"); render(); }
-    function currentTinderItem() { return outfits.find(item => item.id === tinder.pool[tinder.index]); }
-    function rememberTinderStep(id, reviewBefore) { tinder.history.push({ id, round: tinder.round, pool: [...tinder.pool], index: tinder.index, nextPool: [...tinder.nextPool], reviewBefore: { ...reviewBefore } }); }
-    function acceptCurrent() { const item = currentTinderItem(); if (!item || tinder.animating) return; const review = reviewFor(item.id); rememberTinderStep(item.id, review); setReview(item.id, { tinderStars: (review.tinderStars || 0) + 1, favorite: true, rejected: false }, false); tinder.nextPool.push(item.id); animateDecision("right"); }
-    function rejectCurrent() { const item = currentTinderItem(); if (!item || tinder.animating) return; rememberTinderStep(item.id, reviewFor(item.id)); setReview(item.id, { rejected: true }, false); animateDecision("left"); }
-    function undoTinder() { if (tinder.animating || !tinder.history.length) return; const last = tinder.history.pop(); tinder.round = last.round; tinder.pool = last.pool; tinder.index = last.index; tinder.nextPool = last.nextPool; reviews[last.id] = last.reviewBefore; saveReviews(); renderTinder(); }
-    function animateDecision(direction) { const card = document.getElementById("swipeCard"); if (!card) { advanceTinder(); return; } tinder.animating = true; card.classList.add(direction === "right" ? "fly-right" : "fly-left"); window.setTimeout(() => { tinder.animating = false; advanceTinder(); }, 170); }
-    function advanceTinder() { tinder.index += 1; if (tinder.index >= tinder.pool.length) { tinder.round += 1; tinder.pool = Array.from(new Set(tinder.nextPool)); tinder.index = 0; tinder.nextPool = []; } renderTinder(); }
+    document.addEventListener("keydown", event => {
+      if (!tinder.active) return;
+      if (event.key === "Escape") closeTinder();
+      if (event.key === "ArrowLeft") rejectCurrent();
+      if (event.key === "ArrowRight") acceptCurrent();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && document.body.classList.contains("detail-open")) closeDetail();
+    });
+
+    function isMobileLayout() {
+      return window.matchMedia("(max-width: 980px)").matches;
+    }
+
+    function closeDetail() {
+      document.body.classList.remove("detail-open");
+    }
+
+    function startTinder() {
+      tinder = {
+        active: true,
+        round: 1,
+        pool: filteredOutfits().map(item => item.id),
+        index: 0,
+        nextPool: [],
+        history: [],
+        animating: false
+      };
+      document.body.classList.add("tinder-open");
+      tinderModal.setAttribute("aria-hidden", "false");
+      renderTinder();
+    }
+
+    function closeTinder() {
+      tinder.active = false;
+      document.body.classList.remove("tinder-open");
+      tinderModal.setAttribute("aria-hidden", "true");
+      render();
+    }
+
+    function currentTinderItem() {
+      return outfits.find(item => item.id === tinder.pool[tinder.index]);
+    }
+
+    function acceptCurrent() {
+      const item = currentTinderItem();
+      if (!item || tinder.animating) return;
+      const review = reviewFor(item.id);
+      rememberTinderStep(item.id, review);
+      setReview(item.id, {
+        tinderStars: (review.tinderStars || 0) + 1,
+        favorite: true,
+        rejected: false
+      }, false);
+      tinder.nextPool.push(item.id);
+      animateDecision("right");
+    }
+
+    function rejectCurrent() {
+      const item = currentTinderItem();
+      if (!item || tinder.animating) return;
+      rememberTinderStep(item.id, reviewFor(item.id));
+      setReview(item.id, { rejected: true }, false);
+      animateDecision("left");
+    }
+
+    function rememberTinderStep(id, reviewBefore) {
+      tinder.history.push({
+        id,
+        round: tinder.round,
+        pool: [...tinder.pool],
+        index: tinder.index,
+        nextPool: [...tinder.nextPool],
+        reviewBefore: { ...reviewBefore }
+      });
+    }
+
+    function undoTinder() {
+      if (tinder.animating || !tinder.history.length) return;
+      const last = tinder.history.pop();
+      tinder.round = last.round;
+      tinder.pool = last.pool;
+      tinder.index = last.index;
+      tinder.nextPool = last.nextPool;
+      reviews[last.id] = last.reviewBefore;
+      saveReviews();
+      renderTinder();
+    }
+
+    function animateDecision(direction) {
+      const card = document.getElementById("swipeCard");
+      if (!card) {
+        advanceTinder();
+        return;
+      }
+      tinder.animating = true;
+      card.classList.add(direction === "right" ? "fly-right" : "fly-left");
+      window.setTimeout(() => {
+        tinder.animating = false;
+        advanceTinder();
+      }, 170);
+    }
+
+    function advanceTinder() {
+      tinder.index += 1;
+      if (tinder.index >= tinder.pool.length) {
+        tinder.round += 1;
+        tinder.pool = Array.from(new Set(tinder.nextPool));
+        tinder.index = 0;
+        tinder.nextPool = [];
+      }
+      renderTinder();
+    }
 
     function renderTinder() {
-      if (!tinder.pool.length) { tinderStatus.textContent = "Auswahl abgeschlossen."; tinderStage.innerHTML = `<div class="tinder-empty"><h3>Fertig verdichtet</h3><p>Es ist kein Outfit mehr fuer die naechste Runde uebrig. Die Sterne bleiben in der Uebersicht und im Export erhalten.</p><button class="primary" onclick="closeTinder()">Zurueck zur Auswahl</button></div>`; return; }
-      const item = currentTinderItem(); const review = reviewFor(item.id);
+      if (!tinder.pool.length) {
+        tinderStatus.textContent = "Auswahl abgeschlossen.";
+        tinderStage.innerHTML = `
+          <div class="tinder-empty">
+            <h3>Fertig verdichtet</h3>
+            <p>Es ist kein Outfit mehr fuer die naechste Runde uebrig. Die Sterne bleiben in der Uebersicht und im Export erhalten.</p>
+            <button class="primary" onclick="closeTinder()">Zurueck zur Auswahl</button>
+          </div>
+        `;
+        return;
+      }
+
+      const item = currentTinderItem();
+      const review = reviewFor(item.id);
       tinderStatus.textContent = `Runde ${tinder.round} · ${tinder.index + 1}/${tinder.pool.length} · bisher ${review.tinderStars || 0} Sterne`;
-      tinderStage.innerHTML = `<div class="tinder-card" id="swipeCard"><div class="decision-badge accept-badge" id="acceptBadge">OK</div><div class="decision-badge reject-badge" id="rejectBadge">Raus</div><div class="swipe-hint">Wischen oder Buttons nutzen</div><img src="${item.file}" alt="${item.name}"><div class="tinder-info"><strong>${item.id}. ${item.name}</strong><span>${item.group} · ${item.note}</span></div></div><div class="tinder-controls"><button class="reject" id="rejectOutfit">Links: faellt raus</button><button class="accept" id="acceptOutfit">Rechts: kommt in Frage</button></div><div class="tinder-tools"><button id="undoTinder" ${tinder.history.length ? "" : "disabled"}>Letzte Entscheidung zuruecknehmen</button></div>`;
+      tinderStage.innerHTML = `
+        <div class="tinder-card" id="swipeCard">
+          <div class="decision-badge accept-badge" id="acceptBadge">OK</div>
+          <div class="decision-badge reject-badge" id="rejectBadge">Raus</div>
+          <div class="swipe-hint">Wischen oder Buttons nutzen</div>
+          <img src="${item.file}" alt="${item.name}">
+          <div class="tinder-info">
+            <strong>${item.id}. ${item.name}</strong>
+            <span>${item.group} · ${item.note}</span>
+          </div>
+        </div>
+        <div class="tinder-controls">
+          <button class="reject" id="rejectOutfit">Links: faellt raus</button>
+          <button class="accept" id="acceptOutfit">Rechts: kommt in Frage</button>
+        </div>
+        <div class="tinder-tools">
+          <button id="undoTinder" ${tinder.history.length ? "" : "disabled"}>Letzte Entscheidung zuruecknehmen</button>
+        </div>
+      `;
       document.getElementById("rejectOutfit").addEventListener("click", rejectCurrent);
       document.getElementById("acceptOutfit").addEventListener("click", acceptCurrent);
       document.getElementById("undoTinder").addEventListener("click", undoTinder);
@@ -736,14 +1053,71 @@
     }
 
     function attachSwipe(card) {
-      let startX = 0, startY = 0, dragging = false;
-      card.addEventListener("pointerdown", event => { if (tinder.animating) return; dragging = true; startX = event.clientX; startY = event.clientY; card.classList.add("dragging"); card.setPointerCapture(event.pointerId); });
-      card.addEventListener("pointermove", event => { if (!dragging) return; const dx = event.clientX - startX; const dy = event.clientY - startY; if (Math.abs(dx) > 8) event.preventDefault(); const tilt = Math.max(-10, Math.min(10, dx / 18)); const confidence = Math.min(1, Math.abs(dx) / 120); const acceptBadge = document.getElementById("acceptBadge"); const rejectBadge = document.getElementById("rejectBadge"); card.style.transform = `translate(${dx}px, ${dy * 0.2}px) rotate(${tilt}deg)`; if (acceptBadge) acceptBadge.style.opacity = dx > 0 ? confidence : 0; if (rejectBadge) rejectBadge.style.opacity = dx < 0 ? confidence : 0; });
-      card.addEventListener("pointerup", event => { if (!dragging) return; dragging = false; card.classList.remove("dragging"); const dx = event.clientX - startX; const threshold = Math.min(120, Math.max(82, card.offsetWidth * 0.24)); if (dx > threshold) { acceptCurrent(); return; } if (dx < -threshold) { rejectCurrent(); return; } resetSwipeCard(card); });
-      card.addEventListener("pointercancel", () => { dragging = false; card.classList.remove("dragging"); resetSwipeCard(card); });
+      let startX = 0;
+      let startY = 0;
+      let dragging = false;
+
+      card.addEventListener("pointerdown", event => {
+        if (tinder.animating) return;
+        dragging = true;
+        startX = event.clientX;
+        startY = event.clientY;
+        card.classList.add("dragging");
+        card.setPointerCapture(event.pointerId);
+      });
+
+      card.addEventListener("pointermove", event => {
+        if (!dragging) return;
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+        if (Math.abs(dx) > 8) event.preventDefault();
+        const tilt = Math.max(-10, Math.min(10, dx / 18));
+        const confidence = Math.min(1, Math.abs(dx) / 120);
+        const acceptBadge = document.getElementById("acceptBadge");
+        const rejectBadge = document.getElementById("rejectBadge");
+        card.style.transform = `translate(${dx}px, ${dy * 0.2}px) rotate(${tilt}deg)`;
+        if (acceptBadge) acceptBadge.style.opacity = dx > 0 ? confidence : 0;
+        if (rejectBadge) rejectBadge.style.opacity = dx < 0 ? confidence : 0;
+      });
+
+      card.addEventListener("pointerup", event => {
+        if (!dragging) return;
+        dragging = false;
+        card.classList.remove("dragging");
+        const dx = event.clientX - startX;
+        const threshold = Math.min(120, Math.max(82, card.offsetWidth * 0.24));
+        if (dx > threshold) {
+          acceptCurrent();
+          return;
+        }
+        if (dx < -threshold) {
+          rejectCurrent();
+          return;
+        }
+        resetSwipeCard(card);
+      });
+
+      card.addEventListener("pointercancel", () => {
+        dragging = false;
+        card.classList.remove("dragging");
+        resetSwipeCard(card);
+      });
     }
-    function resetSwipeCard(card) { const acceptBadge = document.getElementById("acceptBadge"); const rejectBadge = document.getElementById("rejectBadge"); card.style.transform = ""; if (acceptBadge) acceptBadge.style.opacity = 0; if (rejectBadge) rejectBadge.style.opacity = 0; }
-    function render() { renderFilters(); renderGrid(); renderDetail(); }
+
+    function resetSwipeCard(card) {
+      const acceptBadge = document.getElementById("acceptBadge");
+      const rejectBadge = document.getElementById("rejectBadge");
+      card.style.transform = "";
+      if (acceptBadge) acceptBadge.style.opacity = 0;
+      if (rejectBadge) rejectBadge.style.opacity = 0;
+    }
+
+    function render() {
+      renderFilters();
+      renderGrid();
+      renderDetail();
+    }
+
     render();
   </script>
 </body>
