@@ -1,0 +1,43 @@
+name: Import outfit app
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/import-outfit-app.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download prepared app zip
+        run: |
+          curl -L "https://oaisdmntprnorthcentralus.blob.core.windows.net/files/00000000-fe08-722f-9c51-f4a30b7760b1/raw?se=2026-07-04T17%3A03%3A08Z&sp=r&sv=2026-02-06&sr=b&scid=841e1bb1-9661-4d95-8826-2b91cb86d01e&skoid=e9d2f8b1-028a-4cff-8eb1-d0e66fbefcca&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-04T12%3A59%3A14Z&ske=2026-07-06T12%3A59%3A14Z&sks=b&skv=2026-02-06&sig=q3yiBiXc6Bt0IOHWUelAbOxnTG/ySn4pbunYRA9hQ7s%3D" -o /tmp/outfit-app.zip
+          mkdir -p /tmp/outfit-app
+          unzip -q /tmp/outfit-app.zip -d /tmp/outfit-app
+
+      - name: Replace static app files
+        run: |
+          find . -mindepth 1 -maxdepth 1 \
+            ! -name ".git" \
+            ! -name ".github" \
+            -exec rm -rf {} +
+          cp -R /tmp/outfit-app/. .
+
+      - name: Commit imported app
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Import optimized outfit tinder app"
+            git push
+          fi
