@@ -1,0 +1,8 @@
+name = "outfit-tinder"
+compatibility_date = "2026-07-05"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "outfit-tinder"
+database_id = "af9c9f94-0865-4f81-b850-e60aa076ce57"
