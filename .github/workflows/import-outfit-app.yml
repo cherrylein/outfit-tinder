@@ -2,15 +2,16 @@ name: Import outfit app
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/import-outfit-app.yml"
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   import-app:
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'Import outfit app'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -42,4 +43,14 @@ jobs:
             git push
           fi
 
-# Triggered by Codex to import the prepared web app.
+      - name: Comment on trigger issue
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'Import workflow finished.'
+            })
