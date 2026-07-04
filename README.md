@@ -2,6 +2,8 @@
 
 Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 
+Aktueller Stand: **v1.6 Mobile Sync**
+
 ## Funktionen
 
 - Outfit-Galerie mit Kategorien
@@ -11,8 +13,17 @@ Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 - Teilnehmername beim Oeffnen der App
 - gemeinsame Speicherung pro Projekt und Name ueber Cloudflare D1
 - gemeinsame Ergebnisansicht ueber "Alle Ergebnisse"
+- Meine Topliste fuer die lokale Auswahl
+- Link kopieren mit Projekt/User-Parametern
+- Bild kleiner/groesser Toggle fuer kleine Handy-Displays
 - Export als JSON oder CSV
 - lokaler Fallback im Browser, falls D1 noch nicht verbunden ist
+
+## v1.6 Notizen
+
+- `mobile.css` verbessert das Handy-Layout, speziell Detailansicht, kleine Displays und Zoom-Situationen.
+- `app-enhancements.js` setzt die Versionsanzeige, ergaenzt Teilen/Topliste/Bildgroesse und fuegt Wischgesten in der Detailansicht hinzu.
+- `sync.js` und `functions/api/state.js` bilden die gemeinsame Speicherung pro Name/Projekt ab.
 
 ## Hosting
 
