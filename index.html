@@ -637,7 +637,7 @@
       <div>
         <div class="title-row">
           <h1>Outfit Auswahl</h1>
-          <span class="version-badge">v1.3 Mobile Fix</span>
+          <span class="version-badge">v1.4 Mobile Light</span>
         </div>
         <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Alles wird lokal im Browser gespeichert.</div>
       </div>
@@ -776,8 +776,29 @@
     function selectOutfit(id, openMobileDetail = false) {
       selectedId = id;
       if (openMobileDetail && isMobileLayout()) document.body.classList.add("detail-open");
-      renderGrid();
+      updateSelectedCard();
       renderDetail();
+    }
+
+    function updateSelectedCard() {
+      grid.querySelectorAll(".card").forEach(card => {
+        card.classList.toggle("selected", card.dataset.id === selectedId);
+      });
+    }
+
+    function updateCardMeta(id) {
+      const card = grid.querySelector(`.card[data-id="${id}"]`);
+      if (!card) return;
+      const review = reviewFor(id);
+      const score = card.querySelector("[data-scoreline]");
+      const fav = card.querySelector("[data-fav]");
+      if (score) {
+        score.textContent = `${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}`;
+      }
+      if (fav) {
+        fav.className = review.favorite ? "fav" : "";
+        fav.textContent = review.favorite ? "Favorit" : "";
+      }
     }
 
     function moveDetail(direction) {
@@ -799,19 +820,20 @@
         const review = reviewFor(item.id);
         const card = document.createElement("article");
         card.className = "card" + (item.id === selectedId ? " selected" : "");
+        card.dataset.id = item.id;
         card.addEventListener("click", event => {
           event.preventDefault();
           selectOutfit(item.id, true);
         });
 
         card.innerHTML = `
-          <img class="thumb" src="${item.file}" alt="${item.name}">
+          <img class="thumb" src="${item.file}" alt="${item.name}" loading="lazy" decoding="async">
           <div class="meta">
             <div class="name">${item.id}. ${item.name}</div>
             <div class="tagline">${item.group}</div>
             <div class="scoreline">
-              <span>${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}</span>
-              <span class="${review.favorite ? "fav" : ""}">${review.favorite ? "Favorit" : ""}</span>
+              <span data-scoreline>${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}</span>
+              <span data-fav class="${review.favorite ? "fav" : ""}">${review.favorite ? "Favorit" : ""}</span>
             </div>
           </div>
         `;
@@ -881,15 +903,14 @@
 
       detail.querySelector("#comment").addEventListener("input", event => {
         setReview(item.id, { comment: event.target.value }, false);
-        renderGrid();
       });
     }
 
     function setReview(id, patch, rerender = true) {
       reviews[id] = { ...reviewFor(id), ...patch };
       saveReviews();
+      updateCardMeta(id);
       if (rerender) {
-        renderGrid();
         renderDetail();
       }
     }
