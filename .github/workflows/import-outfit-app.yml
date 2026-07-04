@@ -19,7 +19,7 @@ jobs:
 
       - name: Download prepared app zip
         run: |
-          curl -L "https://oaisdmntprnorthcentralus.blob.core.windows.net/files/00000000-fe08-722f-9c51-f4a30b7760b1/raw?se=2026-07-04T17%3A03%3A08Z&sp=r&sv=2026-02-06&sr=b&scid=841e1bb1-9661-4d95-8826-2b91cb86d01e&skoid=e9d2f8b1-028a-4cff-8eb1-d0e66fbefcca&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-04T12%3A59%3A14Z&ske=2026-07-06T12%3A59%3A14Z&sks=b&skv=2026-02-06&sig=q3yiBiXc6Bt0IOHWUelAbOxnTG/ySn4pbunYRA9hQ7s%3D" -o /tmp/outfit-app.zip
+          curl -L "https://oaisdmntprnorthcentralus.blob.core.windows.net/files/00000000-4078-722f-bb8a-ff7ef3265a06/raw?se=2026-07-04T17%3A59%3A29Z&sp=r&sv=2026-02-06&sr=b&scid=f402d422-9aa4-4f1a-aa7d-70533ca6ee99&skoid=e9d2f8b1-028a-4cff-8eb1-d0e66fbefcca&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-03T23%3A53%3A24Z&ske=2026-07-05T23%3A53%3A24Z&sks=b&skv=2026-02-06&sig=J2IgvzJmKvP%2BEQOr4sD2IPlTOWUVHg7q4nIWiQ4c%2BWc%3D" -o /tmp/outfit-app.zip
           mkdir -p /tmp/outfit-app
           unzip -q /tmp/outfit-app.zip -d /tmp/outfit-app
 
