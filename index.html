@@ -53,6 +53,27 @@
       letter-spacing: 0;
     }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 9px;
+      background: var(--panel);
+      color: var(--accent-dark);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
     .subtitle {
       margin-top: 4px;
       color: var(--muted);
@@ -602,7 +623,10 @@
   <header>
     <div class="bar">
       <div>
-        <h1>Outfit Auswahl</h1>
+        <div class="title-row">
+          <h1>Outfit Auswahl</h1>
+          <span class="version-badge">v1.2 Mobile Detail</span>
+        </div>
         <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Alles wird lokal im Browser gespeichert.</div>
       </div>
       <div class="actions">
@@ -680,15 +704,7 @@
     let selectedId = outfits[0].id;
     let activeGroup = "Alle";
     let reviews = loadReviews();
-    let tinder = {
-      active: false,
-      round: 1,
-      pool: [],
-      index: 0,
-      nextPool: [],
-      history: [],
-      animating: false
-    };
+    let tinder = { active: false, round: 1, pool: [], index: 0, nextPool: [], history: [], animating: false };
 
     const grid = document.getElementById("grid");
     const detail = document.getElementById("detail");
@@ -717,6 +733,10 @@
       return ["Alle", ...Array.from(new Set(outfits.map(item => item.group)))];
     }
 
+    function filteredOutfits() {
+      return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup);
+    }
+
     function renderFilters() {
       filters.innerHTML = "";
       groups().forEach(group => {
@@ -731,10 +751,6 @@
         });
         filters.appendChild(button);
       });
-    }
-
-    function filteredOutfits() {
-      return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup);
     }
 
     function renderGrid() {
@@ -916,15 +932,7 @@
     }
 
     function startTinder() {
-      tinder = {
-        active: true,
-        round: 1,
-        pool: filteredOutfits().map(item => item.id),
-        index: 0,
-        nextPool: [],
-        history: [],
-        animating: false
-      };
+      tinder = { active: true, round: 1, pool: filteredOutfits().map(item => item.id), index: 0, nextPool: [], history: [], animating: false };
       document.body.classList.add("tinder-open");
       tinderModal.setAttribute("aria-hidden", "false");
       renderTinder();
@@ -939,6 +947,17 @@
 
     function currentTinderItem() {
       return outfits.find(item => item.id === tinder.pool[tinder.index]);
+    }
+
+    function rememberTinderStep(id, reviewBefore) {
+      tinder.history.push({
+        id,
+        round: tinder.round,
+        pool: [...tinder.pool],
+        index: tinder.index,
+        nextPool: [...tinder.nextPool],
+        reviewBefore: { ...reviewBefore }
+      });
     }
 
     function acceptCurrent() {
@@ -961,17 +980,6 @@
       rememberTinderStep(item.id, reviewFor(item.id));
       setReview(item.id, { rejected: true }, false);
       animateDecision("left");
-    }
-
-    function rememberTinderStep(id, reviewBefore) {
-      tinder.history.push({
-        id,
-        round: tinder.round,
-        pool: [...tinder.pool],
-        index: tinder.index,
-        nextPool: [...tinder.nextPool],
-        reviewBefore: { ...reviewBefore }
-      });
     }
 
     function undoTinder() {
