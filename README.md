@@ -16,7 +16,7 @@ Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 
 ## Hosting
 
-Die App laeuft als Cloudflare Pages Projekt.
+Die App laeuft als Cloudflare Pages Projekt. Die D1-Bindung ist in `wrangler.toml` hinterlegt.
 
 ## D1 Setup
 
@@ -26,12 +26,18 @@ Die App erwartet in Cloudflare Pages eine D1 Binding Variable mit dem Namen:
 DB
 ```
 
-Empfohlene Schritte in Cloudflare:
+Aktuelle D1-Konfiguration:
 
-1. D1 Datenbank erstellen, z. B. `outfit_tinder`.
-2. Im Pages Projekt `outfit-tinder` unter Settings > Functions > D1 database bindings die Datenbank als `DB` binden.
-3. Optional `schema.sql` in D1 ausfuehren. Die API legt die Tabelle aber auch selbst an, falls sie fehlt.
-4. Pages neu deployen.
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "outfit-tinder"
+database_id = "af9c9f94-0865-4f81-b850-e60aa076ce57"
+```
+
+Falls Cloudflare Pages die `wrangler.toml` nicht automatisch uebernimmt, im Pages Projekt `outfit-tinder` unter Settings > Functions > D1 database bindings die Datenbank manuell als `DB` binden.
+
+Optional kann `schema.sql` in D1 ausgefuehrt werden. Die API legt die Tabelle aber auch selbst an, falls sie fehlt.
 
 ## Nutzung
 
