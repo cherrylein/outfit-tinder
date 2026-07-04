@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Outfit Auswahl</title>
+  <style>
+    :root {
+      --bg: #f6f1ec;
+      --panel: #ffffff;
+      --ink: #1d1715;
+      --muted: #756b65;
+      --line: #ddd3cc;
+      --accent: #ca4f45;
+      --accent-dark: #8f332d;
+      --soft: #eee5de;
+      --good: #1f7a4d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(246, 241, 236, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 14px 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button, select, input, textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    button, .chip {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 9px 11px;
+      cursor: pointer;
+    }
+
+    button:hover, .chip:hover { border-color: #c7b8ae; }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    button.primary:hover { background: var(--accent-dark); }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap: 18px;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .chip.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card.selected {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .thumb {
+      display: block;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      object-position: top center;
+      background: var(--soft);
+    }
+
+    .meta {
+      padding: 9px 10px 10px;
+    }
+
+    .name {
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.25;
+      min-height: 32px;
+    }
+
+    .tagline {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .scoreline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .fav {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    aside {
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+      max-height: calc(100vh - 96px);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+    }
+
+    .preview-wrap {
+      overflow: auto;
+      background: #ebe3dc;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .preview {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .review {
+      padding: 14px;
+    }
+
+    .review h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .review .desc {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .field {
+      margin-top: 13px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .rating {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+
+    .rating button {
+      padding: 10px 0;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .rating button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 90px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      resize: vertical;
+      background: #fff;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .summary div {
+      background: var(--soft);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .summary strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .empty {
+      padding: 30px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    @media (max-width: 980px) {
+      .bar, main {
+        display: block;
+      }
+
+      .actions {
+        justify-content: flex-start;
+        margin-top: 12px;
+      }
+
+      aside {
+        position: static;
+        max-height: none;
+        margin-top: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div>
+        <h1>Outfit Auswahl</h1>
+        <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Alles wird lokal im Browser gespeichert.</div>
+      </div>
+      <div class="actions">
+        <button id="exportJson">JSON exportieren</button>
+        <button id="exportCsv">CSV exportieren</button>
+        <button id="clearData">Bewertungen leeren</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="filters" id="filters"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <aside id="detail"></aside>
+  </main>
+
+  <script>
+    const outfits = [
+      { id: "00", file: "images/00-armor-outfit-dark.png", name: "Armor Outfit Dunkel", group: "Armor", note: "Erster Panzerlook im dunklen Licht." },
+      { id: "01", file: "images/01-armor-outfit-deep-v.png", name: "Armor Deep V", group: "Armor", note: "Mehr Dekollete unter dem Schulterpanzer." },
+      { id: "02", file: "images/02-armor-outfit-bright.png", name: "Armor Kataloglicht", group: "Armor", note: "Helleres Licht, Panzer und Outfit besser lesbar." },
+      { id: "03", file: "images/03-armor-skirt-boots.png", name: "Armor + Rock", group: "Armor", note: "Schulterpanzer mit Rock und Overknees." },
+      { id: "04", file: "images/04-skirt-sleeves-fabric-boots.png", name: "Rock + Stoffstiefel", group: "Basis", note: "Ohne Panzer, noch mit Aermeln." },
+      { id: "05", file: "images/05-sleeveless-high-heel-boots.png", name: "Sleeveless Test", group: "Basis", note: "Aermellos, aber noch mit hohem Absatz." },
+      { id: "06", file: "images/06-base-flat-boots.png", name: "Basis Flat Boots", group: "Basis", note: "Fixe Stoff-Overknees mit flachem Absatz." },
+      { id: "07", file: "images/07-normal-ribbed-a-line.png", name: "Normal Ribbed A-Line", group: "Normal", note: "Cleaner Rollkragen-/A-Linien-Look." },
+      { id: "08", file: "images/08-normal-wrap-skirt.png", name: "Normal Wrap Skirt", group: "Normal", note: "Wickelrock und Square-Neck." },
+      { id: "09", file: "images/09-normal-knit-dress.png", name: "Normal Knit Dress", group: "Normal", note: "Kurzes Strickkleid mit Keyhole." },
+      { id: "10", file: "images/10-sexy-draped-wrap.png", name: "Sexy Draped Wrap", group: "Sexy", note: "Drapierter Wickel-Look." },
+      { id: "11", file: "images/11-sexy-one-shoulder.png", name: "Sexy One Shoulder", group: "Sexy", note: "Asymmetrische Schulter und Schlitz." },
+      { id: "12", file: "images/12-sexy-sweetheart-cutout.png", name: "Sexy Sweetheart Cutout", group: "Sexy", note: "Sweetheart-Top mit Cutout." },
+      { id: "13", file: "images/13-more-sexy-halter-crop.png", name: "Halter Crop", group: "Mehr Sexy", note: "Crop Top und Micro-Mini." },
+      { id: "14", file: "images/14-more-sexy-bandeau-cutout.png", name: "Bandeau Cutout", group: "Mehr Sexy", note: "Bandeau und asymmetrischer Cutout." },
+      { id: "15", file: "images/15-more-sexy-deep-body-wrap.png", name: "Deep Body Wrap", group: "Mehr Sexy", note: "Tiefer Body plus Wickelteil." },
+      { id: "16", file: "images/16-extreme-harness-wrap.png", name: "Harness Wrap", group: "Extrem", note: "Erster extremer Harness-Wrap-Look." },
+      { id: "17", file: "images/17-bold-plunging-body.png", name: "Plunging Body", group: "Bold", note: "Sehr tiefer Body ohne Rock." },
+      { id: "18", file: "images/18-bold-hotpants-bra-layer.png", name: "Hotpants Bra Layer", group: "Bold", note: "Hotpants, Bra und transparenter Layer." },
+      { id: "19", file: "images/19-bold-underboob-paperbag.png", name: "Underboob Paperbag", group: "Underboob", note: "Underboob-Crop und Paperbag-Shorts." },
+      { id: "20", file: "images/20-bold-corset-body.png", name: "Corset Body", group: "Body", note: "Lingerie-inspirierter Corset-Body." },
+      { id: "21", file: "images/21-bold-bra-boxer-shorts.png", name: "Bra + Boxer Shorts", group: "Bold", note: "Lockerere Shorts und Bra." },
+      { id: "22", file: "images/22-bold-asym-romper.png", name: "Asym Romper", group: "Bold", note: "Asymmetrischer Romper mit Side-Cutout." },
+      { id: "23", file: "images/23-bold-mesh-overlay.png", name: "Mesh Overlay", group: "Bold", note: "Mesh-Minikleid ueber Bra/Briefs." },
+      { id: "24", file: "images/24-bold-deep-v-shorts.png", name: "Deep V + Shorts", group: "Bold", note: "Super Deep V mit Micro-Shorts." },
+      { id: "25", file: "images/25-bold-strappy-hotpants.png", name: "Strappy Hotpants", group: "Bold", note: "Grafisches Strap-Set mit Hotpants." },
+      { id: "26", file: "images/26-bold-extreme-sci-fi-festival.png", name: "Sci-Fi Festival Extreme", group: "Extrem", note: "Radikaler Stoff-Harness-Festival-Look." },
+      { id: "27", file: "images/27-underboob-paperbag.png", name: "Underboob Paperbag V2", group: "Underboob", note: "Tragbare Underboob-Variante." },
+      { id: "28", file: "images/28-underboob-halter-hotpants.png", name: "Underboob Halter", group: "Underboob", note: "Halter-Top mit Hotpants." },
+      { id: "29", file: "images/29-underboob-asym-panel.png", name: "Underboob Asym Panel", group: "Underboob", note: "Asymmetrisches Panel, gut panzerkompatibel." },
+      { id: "30", file: "images/30-underboob-cargo.png", name: "Underboob Cargo", group: "Underboob", note: "Utility/Festival mit Cargo-Shorts." },
+      { id: "31", file: "images/31-underboob-strappy-cutout.png", name: "Underboob Strappy Cutout", group: "Underboob", note: "Mutigste Underboob-Variante." }
+    ];
+
+    const storeKey = "outfit-selection-v1";
+    let selectedId = outfits[0].id;
+    let activeGroup = "Alle";
+    let reviews = loadReviews();
+
+    const grid = document.getElementById("grid");
+    const detail = document.getElementById("detail");
+    const filters = document.getElementById("filters");
+
+    function loadReviews() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveReviews() {
+      localStorage.setItem(storeKey, JSON.stringify(reviews));
+    }
+
+    function reviewFor(id) {
+      return reviews[id] || { rating: 0, favorite: false, comment: "" };
+    }
+
+    function groups() {
+      return ["Alle", ...Array.from(new Set(outfits.map(item => item.group)))];
+    }
+
+    function renderFilters() {
+      filters.innerHTML = "";
+      groups().forEach(group => {
+        const button = document.createElement("button");
+        button.className = "chip" + (activeGroup === group ? " active" : "");
+        button.textContent = group;
+        button.addEventListener("click", () => {
+          activeGroup = group;
+          const visible = filteredOutfits();
+          if (!visible.some(item => item.id === selectedId) && visible[0]) selectedId = visible[0].id;
+          render();
+        });
+        filters.appendChild(button);
+      });
+    }
+
+    function filteredOutfits() {
+      return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup);
+    }
+
+    function renderGrid() {
+      const items = filteredOutfits();
+      grid.innerHTML = "";
+      if (!items.length) {
+        grid.innerHTML = '<div class="empty">Keine Designs in diesem Filter.</div>';
+        return;
+      }
+      items.forEach(item => {
+        const review = reviewFor(item.id);
+        const card = document.createElement("article");
+        card.className = "card" + (item.id === selectedId ? " selected" : "");
+        card.addEventListener("click", () => {
+          selectedId = item.id;
+          render();
+        });
+
+        card.innerHTML = `
+          <img class="thumb" src="${item.file}" alt="${item.name}">
+          <div class="meta">
+            <div class="name">${item.id}. ${item.name}</div>
+            <div class="tagline">${item.group}</div>
+            <div class="scoreline">
+              <span>${review.rating ? review.rating + "/5" : "nicht bewertet"}</span>
+              <span class="${review.favorite ? "fav" : ""}">${review.favorite ? "Favorit" : ""}</span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderDetail() {
+      const item = outfits.find(entry => entry.id === selectedId) || outfits[0];
+      const review = reviewFor(item.id);
+      const rated = outfits.filter(entry => reviewFor(entry.id).rating > 0).length;
+      const favs = outfits.filter(entry => reviewFor(entry.id).favorite).length;
+      const comments = outfits.filter(entry => reviewFor(entry.id).comment.trim()).length;
+
+      detail.innerHTML = `
+        <div class="preview-wrap">
+          <img class="preview" src="${item.file}" alt="${item.name}">
+        </div>
+        <div class="review">
+          <h2>${item.id}. ${item.name}</h2>
+          <div class="desc">${item.note}</div>
+
+          <div class="summary">
+            <div><strong>${rated}</strong>bewertet</div>
+            <div><strong>${favs}</strong>Favoriten</div>
+            <div><strong>${comments}</strong>Kommentare</div>
+          </div>
+
+          <div class="field">
+            <label>Bewertung</label>
+            <div class="rating">
+              ${[1, 2, 3, 4, 5].map(score => `<button data-rating="${score}" class="${review.rating === score ? "active" : ""}">${score}</button>`).join("")}
+            </div>
+          </div>
+
+          <div class="field toggle-row">
+            <input id="favorite" type="checkbox" ${review.favorite ? "checked" : ""}>
+            <label for="favorite" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)">Als Favorit markieren</label>
+          </div>
+
+          <div class="field">
+            <label>Kommentar</label>
+            <textarea id="comment" placeholder="Was funktioniert? Was ist zu viel? Was muesste geaendert werden?">${escapeHtml(review.comment)}</textarea>
+          </div>
+        </div>
+      `;
+
+      detail.querySelectorAll("[data-rating]").forEach(button => {
+        button.addEventListener("click", () => {
+          setReview(item.id, { rating: Number(button.dataset.rating) });
+        });
+      });
+
+      detail.querySelector("#favorite").addEventListener("change", event => {
+        setReview(item.id, { favorite: event.target.checked });
+      });
+
+      detail.querySelector("#comment").addEventListener("input", event => {
+        setReview(item.id, { comment: event.target.value }, false);
+        renderGrid();
+      });
+    }
+
+    function setReview(id, patch, rerender = true) {
+      reviews[id] = { ...reviewFor(id), ...patch };
+      saveReviews();
+      if (rerender) render();
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function exportRows() {
+      return outfits.map(item => {
+        const review = reviewFor(item.id);
+        return {
+          id: item.id,
+          name: item.name,
+          group: item.group,
+          file: item.file,
+          rating: review.rating || "",
+          favorite: review.favorite ? "yes" : "no",
+          comment: review.comment || ""
+        };
+      });
+    }
+
+    function download(filename, mime, content) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function toCsv(rows) {
+      const headers = Object.keys(rows[0]);
+      const escapeCell = value => `"${String(value).replaceAll('"', '""')}"`;
+      return [headers.join(","), ...rows.map(row => headers.map(header => escapeCell(row[header])).join(","))].join("\n");
+    }
+
+    document.getElementById("exportJson").addEventListener("click", () => {
+      download("outfit-auswahl-bewertungen.json", "application/json", JSON.stringify(exportRows(), null, 2));
+    });
+
+    document.getElementById("exportCsv").addEventListener("click", () => {
+      download("outfit-auswahl-bewertungen.csv", "text/csv", toCsv(exportRows()));
+    });
+
+    document.getElementById("clearData").addEventListener("click", () => {
+      if (!confirm("Alle lokalen Bewertungen und Kommentare loeschen?")) return;
+      reviews = {};
+      saveReviews();
+      render();
+    });
+
+    function render() {
+      renderFilters();
+      renderGrid();
+      renderDetail();
+    }
+
+    render();
+  </script>
+</body>
+</html>
