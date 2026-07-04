@@ -334,6 +334,18 @@
       display: none;
     }
 
+    .detail-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .detail-nav button {
+      min-height: 42px;
+      font-weight: 700;
+    }
+
     .tinder-modal {
       position: fixed;
       inset: 0;
@@ -625,7 +637,7 @@
       <div>
         <div class="title-row">
           <h1>Outfit Auswahl</h1>
-          <span class="version-badge">v1.2 Mobile Detail</span>
+          <span class="version-badge">v1.3 Mobile Fix</span>
         </div>
         <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Alles wird lokal im Browser gespeichert.</div>
       </div>
@@ -704,7 +716,15 @@
     let selectedId = outfits[0].id;
     let activeGroup = "Alle";
     let reviews = loadReviews();
-    let tinder = { active: false, round: 1, pool: [], index: 0, nextPool: [], history: [], animating: false };
+    let tinder = {
+      active: false,
+      round: 1,
+      pool: [],
+      index: 0,
+      nextPool: [],
+      history: [],
+      animating: false
+    };
 
     const grid = document.getElementById("grid");
     const detail = document.getElementById("detail");
@@ -733,10 +753,6 @@
       return ["Alle", ...Array.from(new Set(outfits.map(item => item.group)))];
     }
 
-    function filteredOutfits() {
-      return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup);
-    }
-
     function renderFilters() {
       filters.innerHTML = "";
       groups().forEach(group => {
@@ -753,6 +769,25 @@
       });
     }
 
+    function filteredOutfits() {
+      return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup);
+    }
+
+    function selectOutfit(id, openMobileDetail = false) {
+      selectedId = id;
+      if (openMobileDetail && isMobileLayout()) document.body.classList.add("detail-open");
+      renderGrid();
+      renderDetail();
+    }
+
+    function moveDetail(direction) {
+      const items = filteredOutfits();
+      if (!items.length) return;
+      const currentIndex = Math.max(0, items.findIndex(item => item.id === selectedId));
+      const nextIndex = (currentIndex + direction + items.length) % items.length;
+      selectOutfit(items[nextIndex].id, true);
+    }
+
     function renderGrid() {
       const items = filteredOutfits();
       grid.innerHTML = "";
@@ -764,10 +799,9 @@
         const review = reviewFor(item.id);
         const card = document.createElement("article");
         card.className = "card" + (item.id === selectedId ? " selected" : "");
-        card.addEventListener("click", () => {
-          selectedId = item.id;
-          if (isMobileLayout()) document.body.classList.add("detail-open");
-          render();
+        card.addEventListener("click", event => {
+          event.preventDefault();
+          selectOutfit(item.id, true);
         });
 
         card.innerHTML = `
@@ -799,6 +833,10 @@
         </div>
         <div class="review">
           <button class="detail-close" id="closeDetail">Zurueck zur Uebersicht</button>
+          <div class="detail-nav">
+            <button id="prevDetail" type="button">Vorheriges</button>
+            <button id="nextDetail" type="button">Naechstes Outfit</button>
+          </div>
           <h2>${item.id}. ${item.name}</h2>
           <div class="desc">${item.note}${tinderStars ? " Tinder Sterne: " + tinderStars + "." : ""}</div>
 
@@ -834,6 +872,8 @@
       });
 
       detail.querySelector("#closeDetail").addEventListener("click", closeDetail);
+      detail.querySelector("#prevDetail").addEventListener("click", () => moveDetail(-1));
+      detail.querySelector("#nextDetail").addEventListener("click", () => moveDetail(1));
 
       detail.querySelector("#favorite").addEventListener("change", event => {
         setReview(item.id, { favorite: event.target.checked });
@@ -848,7 +888,10 @@
     function setReview(id, patch, rerender = true) {
       reviews[id] = { ...reviewFor(id), ...patch };
       saveReviews();
-      if (rerender) render();
+      if (rerender) {
+        renderGrid();
+        renderDetail();
+      }
     }
 
     function escapeHtml(value) {
@@ -931,8 +974,20 @@
       document.body.classList.remove("detail-open");
     }
 
+    window.addEventListener("resize", () => {
+      if (!isMobileLayout()) document.body.classList.remove("detail-open");
+    });
+
     function startTinder() {
-      tinder = { active: true, round: 1, pool: filteredOutfits().map(item => item.id), index: 0, nextPool: [], history: [], animating: false };
+      tinder = {
+        active: true,
+        round: 1,
+        pool: filteredOutfits().map(item => item.id),
+        index: 0,
+        nextPool: [],
+        history: [],
+        animating: false
+      };
       document.body.classList.add("tinder-open");
       tinderModal.setAttribute("aria-hidden", "false");
       renderTinder();
@@ -946,23 +1001,14 @@
     }
 
     function currentTinderItem() {
+      if (!tinder.pool.length || tinder.index >= tinder.pool.length) return null;
       return outfits.find(item => item.id === tinder.pool[tinder.index]);
-    }
-
-    function rememberTinderStep(id, reviewBefore) {
-      tinder.history.push({
-        id,
-        round: tinder.round,
-        pool: [...tinder.pool],
-        index: tinder.index,
-        nextPool: [...tinder.nextPool],
-        reviewBefore: { ...reviewBefore }
-      });
     }
 
     function acceptCurrent() {
       const item = currentTinderItem();
       if (!item || tinder.animating) return;
+      tinder.animating = true;
       const review = reviewFor(item.id);
       rememberTinderStep(item.id, review);
       setReview(item.id, {
@@ -977,9 +1023,21 @@
     function rejectCurrent() {
       const item = currentTinderItem();
       if (!item || tinder.animating) return;
+      tinder.animating = true;
       rememberTinderStep(item.id, reviewFor(item.id));
       setReview(item.id, { rejected: true }, false);
       animateDecision("left");
+    }
+
+    function rememberTinderStep(id, reviewBefore) {
+      tinder.history.push({
+        id,
+        round: tinder.round,
+        pool: [...tinder.pool],
+        index: tinder.index,
+        nextPool: [...tinder.nextPool],
+        reviewBefore: { ...reviewBefore }
+      });
     }
 
     function undoTinder() {
@@ -997,15 +1055,15 @@
     function animateDecision(direction) {
       const card = document.getElementById("swipeCard");
       if (!card) {
+        tinder.animating = false;
         advanceTinder();
         return;
       }
-      tinder.animating = true;
       card.classList.add(direction === "right" ? "fly-right" : "fly-left");
       window.setTimeout(() => {
         tinder.animating = false;
         advanceTinder();
-      }, 170);
+      }, 220);
     }
 
     function advanceTinder() {
@@ -1033,6 +1091,11 @@
       }
 
       const item = currentTinderItem();
+      if (!item) {
+        tinder.pool = [];
+        renderTinder();
+        return;
+      }
       const review = reviewFor(item.id);
       tinderStatus.textContent = `Runde ${tinder.round} · ${tinder.index + 1}/${tinder.pool.length} · bisher ${review.tinderStars || 0} Sterne`;
       tinderStage.innerHTML = `
@@ -1047,8 +1110,8 @@
           </div>
         </div>
         <div class="tinder-controls">
-          <button class="reject" id="rejectOutfit">Links: faellt raus</button>
-          <button class="accept" id="acceptOutfit">Rechts: kommt in Frage</button>
+          <button class="reject" id="rejectOutfit" type="button">Links: faellt raus</button>
+          <button class="accept" id="acceptOutfit" type="button">Rechts: kommt in Frage</button>
         </div>
         <div class="tinder-tools">
           <button id="undoTinder" ${tinder.history.length ? "" : "disabled"}>Letzte Entscheidung zuruecknehmen</button>
@@ -1071,7 +1134,12 @@
         startX = event.clientX;
         startY = event.clientY;
         card.classList.add("dragging");
-        card.setPointerCapture(event.pointerId);
+        try {
+          card.setPointerCapture(event.pointerId);
+        } catch {
+          dragging = false;
+          card.classList.remove("dragging");
+        }
       });
 
       card.addEventListener("pointermove", event => {
@@ -1092,6 +1160,9 @@
         if (!dragging) return;
         dragging = false;
         card.classList.remove("dragging");
+        try {
+          if (card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
+        } catch {}
         const dx = event.clientX - startX;
         const threshold = Math.min(120, Math.max(82, card.offsetWidth * 0.24));
         if (dx > threshold) {
@@ -1105,9 +1176,12 @@
         resetSwipeCard(card);
       });
 
-      card.addEventListener("pointercancel", () => {
+      card.addEventListener("pointercancel", event => {
         dragging = false;
         card.classList.remove("dragging");
+        try {
+          if (card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
+        } catch {}
         resetSwipeCard(card);
       });
     }
