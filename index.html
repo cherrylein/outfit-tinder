@@ -263,7 +263,7 @@
       <div>
         <div class="title-row">
           <h1>Outfit Auswahl</h1>
-          <span class="version-badge">v1.6 Mobile Sync</span>
+          <span class="version-badge">v1.6.1 Mobile Sync</span>
         </div>
         <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Mit Handy-Detailansicht und Cloud-Speicherung pro Name.</div>
       </div>
@@ -493,7 +493,7 @@
     function acceptCurrent() {
       const item = currentTinderItem(); if (!item || tinder.animating) return;
       tinder.animating = true; const review = reviewFor(item.id); rememberTinderStep(item.id, review);
-      setReview(item.id, { tinderStars: (review.tinderStars || 0) + 1, favorite: true, rejected: false }, false);
+      setReview(item.id, { tinderStars: (review.tinderStars || 0) + 1, rejected: false }, false);
       tinder.nextPool.push(item.id); animateDecision("right");
     }
     function rejectCurrent() {
