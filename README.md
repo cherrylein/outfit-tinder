@@ -2,7 +2,7 @@
 
 Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 
-Aktueller Stand: **v1.6.1 Mobile Sync**
+Aktueller Stand: **v1.7 Admin Sync**
 
 ## Funktionen
 
@@ -18,6 +18,7 @@ Aktueller Stand: **v1.6.1 Mobile Sync**
 - Bild kleiner/groesser Toggle fuer kleine Handy-Displays
 - Export als JSON oder CSV
 - lokaler Fallback im Browser, falls D1 noch nicht verbunden ist
+- Outfit-Verwaltung ueber `outfits.json`
 
 ## v1.6 Notizen
 
@@ -25,6 +26,31 @@ Aktueller Stand: **v1.6.1 Mobile Sync**
 - `app-enhancements.js` setzt die Versionsanzeige, ergaenzt Teilen/Topliste/Bildgroesse und fuegt Wischgesten in der Detailansicht hinzu.
 - `sync.js` und `functions/api/state.js` bilden die gemeinsame Speicherung pro Name/Projekt ab.
 - `v1.6.1`: Tinder-Rechts-Swipe vergibt nur noch einen Tinder-Stern und setzt nicht mehr automatisch den Favorit-Haken.
+- `v1.7`: Bewertungen senden ein explizites Sync-Signal an D1; Outfits werden aus `outfits.json` geladen.
+
+## Outfits verwalten
+
+Die sichtbaren Bilder stehen in `outfits.json`.
+
+Ein Outfit ausblenden:
+
+```json
+{
+  "active": false,
+  "id": "04",
+  "file": "images/04-skirt-sleeves-fabric-boots.jpg",
+  "name": "Rock + Stoffstiefel",
+  "group": "Basis",
+  "note": "Ohne Panzer, noch mit Aermeln."
+}
+```
+
+Ein neues Outfit hinzufuegen:
+
+1. Bild in den Ordner `images/` legen.
+2. Neuen Eintrag in `outfits.json` ergaenzen.
+3. `id` eindeutig vergeben, z. B. `"38"`.
+4. `active` auf `true` setzen.
 
 ## Hosting
 
