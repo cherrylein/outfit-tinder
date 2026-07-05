@@ -2,8 +2,9 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Outfit Auswahl</title>
+  <link rel="stylesheet" href="/mobile.css">
   <style>
     :root {
       --bg: #f6f1ec;
@@ -17,16 +18,13 @@
       --good: #1f7a4d;
       --bad: #9f2f2f;
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
       background: var(--bg);
     }
-
     header {
       position: sticky;
       top: 0;
@@ -35,7 +33,6 @@
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(12px);
     }
-
     .bar {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -45,21 +42,8 @@
       margin: 0 auto;
       padding: 14px 18px;
     }
-
-    h1 {
-      margin: 0;
-      font-size: 20px;
-      line-height: 1.15;
-      letter-spacing: 0;
-    }
-
-    .title-row {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      flex-wrap: wrap;
-    }
-
+    h1 { margin: 0; font-size: 20px; line-height: 1.15; }
+    .title-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
     .version-badge {
       display: inline-flex;
       align-items: center;
@@ -71,27 +55,11 @@
       color: var(--accent-dark);
       font-size: 12px;
       font-weight: 800;
-      line-height: 1;
     }
-
-    .subtitle {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    button, select, input, textarea {
-      font: inherit;
-      color: inherit;
-    }
-
+    .subtitle { margin-top: 4px; color: var(--muted); font-size: 13px; }
+    .actions, .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions { justify-content: flex-end; }
+    button, input, textarea { font: inherit; color: inherit; }
     button, .chip {
       border: 1px solid var(--line);
       background: var(--panel);
@@ -99,25 +67,9 @@
       padding: 9px 11px;
       cursor: pointer;
     }
-
     button:hover, .chip:hover { border-color: #c7b8ae; }
-
-    button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    button.primary:hover { background: var(--accent-dark); }
-
-    button.dark {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: #fff;
-    }
-
-    button.dark:hover { background: #3a2f2b; }
-
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    button.dark { background: var(--ink); border-color: var(--ink); color: #fff; }
     main {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 420px;
@@ -126,27 +78,14 @@
       margin: 0 auto;
       padding: 18px;
     }
-
-    .filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .chip.active {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: #fff;
-    }
-
+    .filters { margin-bottom: 14px; }
+    .chip.active { background: var(--ink); border-color: var(--ink); color: #fff; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 14px;
       align-items: start;
     }
-
     .card {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -154,12 +93,7 @@
       overflow: hidden;
       cursor: pointer;
     }
-
-    .card.selected {
-      outline: 3px solid var(--accent);
-      outline-offset: 2px;
-    }
-
+    .card.selected { outline: 3px solid var(--accent); outline-offset: 2px; }
     .thumb {
       display: block;
       width: 100%;
@@ -168,40 +102,12 @@
       object-position: top center;
       background: var(--soft);
     }
-
-    .meta {
-      padding: 9px 10px 10px;
-    }
-
-    .name {
-      font-weight: 700;
-      font-size: 13px;
-      line-height: 1.25;
-      min-height: 32px;
-    }
-
-    .tagline {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.25;
-    }
-
-    .scoreline {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .fav {
-      color: var(--accent);
-      font-weight: 800;
-    }
-
+    .meta { padding: 9px 10px 10px; }
+    .name { font-weight: 700; font-size: 13px; line-height: 1.25; min-height: 32px; }
+    .tagline, .scoreline { color: var(--muted); font-size: 12px; line-height: 1.25; }
+    .tagline { margin-top: 5px; }
+    .scoreline { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; }
+    .fav { color: var(--accent); font-weight: 800; }
     aside {
       position: sticky;
       top: 78px;
@@ -214,40 +120,12 @@
       display: grid;
       grid-template-rows: minmax(0, 1fr) auto;
     }
-
-    .preview-wrap {
-      overflow: auto;
-      background: #ebe3dc;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .preview {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    .review {
-      padding: 14px;
-    }
-
-    .review h2 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.2;
-    }
-
-    .review .desc {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .field {
-      margin-top: 13px;
-    }
-
+    .preview-wrap { overflow: auto; background: #ebe3dc; border-bottom: 1px solid var(--line); }
+    .preview { display: block; width: 100%; height: auto; }
+    .review { padding: 14px; }
+    .review h2 { margin: 0; font-size: 18px; line-height: 1.2; }
+    .review .desc { margin-top: 5px; color: var(--muted); font-size: 13px; line-height: 1.35; }
+    .field { margin-top: 13px; }
     .field label {
       display: block;
       margin-bottom: 6px;
@@ -257,25 +135,9 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-
-    .rating {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-    }
-
-    .rating button {
-      padding: 10px 0;
-      text-align: center;
-      font-weight: 700;
-    }
-
-    .rating button.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
+    .rating { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .rating button { padding: 10px 0; text-align: center; font-weight: 700; }
+    .rating button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
     textarea {
       width: 100%;
       min-height: 90px;
@@ -285,67 +147,15 @@
       resize: vertical;
       background: #fff;
     }
-
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .toggle-row input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
-    }
-
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .summary div {
-      background: var(--soft);
-      border-radius: 8px;
-      padding: 8px;
-      font-size: 12px;
-    }
-
-    .summary strong {
-      display: block;
-      font-size: 18px;
-    }
-
-    .empty {
-      padding: 30px;
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.6);
-    }
-
-    body.tinder-open,
-    body.detail-open {
-      overflow: hidden;
-    }
-
-    .detail-close {
-      display: none;
-    }
-
-    .detail-nav {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .detail-nav button {
-      min-height: 42px;
-      font-weight: 700;
-    }
-
+    .toggle-row { display: flex; align-items: center; gap: 8px; }
+    .toggle-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .summary div { background: var(--soft); border-radius: 8px; padding: 8px; font-size: 12px; }
+    .summary strong { display: block; font-size: 18px; }
+    .detail-close { display: none; }
+    .detail-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .detail-nav button { min-height: 42px; font-weight: 700; }
+    body.tinder-open, body.detail-open { overflow: hidden; }
     .tinder-modal {
       position: fixed;
       inset: 0;
@@ -355,41 +165,19 @@
       background: rgba(29, 23, 21, 0.9);
       color: #fff;
     }
-
-    body.tinder-open .tinder-modal {
-      display: grid;
-    }
-
+    body.tinder-open .tinder-modal { display: grid; }
     .tinder-top {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 12px;
       align-items: center;
       padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(0, 0, 0, 0.22);
+      border-bottom: 1px solid rgba(255,255,255,.15);
+      background: rgba(0,0,0,.22);
     }
-
-    .tinder-top h2 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.2;
-    }
-
-    .tinder-status {
-      margin-top: 4px;
-      color: rgba(255, 255, 255, 0.72);
-      font-size: 13px;
-    }
-
-    .tinder-stage {
-      display: grid;
-      place-items: center;
-      min-height: 0;
-      align-content: center;
-      padding: 14px;
-    }
-
+    .tinder-top h2 { margin: 0; font-size: 18px; }
+    .tinder-status { margin-top: 4px; color: rgba(255,255,255,.72); font-size: 13px; }
+    .tinder-stage { display: grid; place-items: center; align-content: center; min-height: 0; padding: 14px; }
     .tinder-card {
       position: relative;
       width: min(520px, 100%);
@@ -400,35 +188,15 @@
       overflow: hidden;
       background: #fff;
       color: var(--ink);
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 22px 60px rgba(0,0,0,.35);
       touch-action: none;
       user-select: none;
-      will-change: transform;
       transition: transform 160ms ease, opacity 160ms ease;
     }
-
-    .tinder-card.dragging {
-      transition: none;
-    }
-
-    .tinder-card.fly-left {
-      opacity: 0;
-      transform: translateX(-130vw) rotate(-18deg);
-    }
-
-    .tinder-card.fly-right {
-      opacity: 0;
-      transform: translateX(130vw) rotate(18deg);
-    }
-
-    .tinder-card img {
-      width: 100%;
-      height: 100%;
-      max-height: calc(100vh - 285px);
-      object-fit: contain;
-      background: #efe8e2;
-    }
-
+    .tinder-card.dragging { transition: none; }
+    .tinder-card.fly-left { opacity: 0; transform: translateX(-130vw) rotate(-18deg); }
+    .tinder-card.fly-right { opacity: 0; transform: translateX(130vw) rotate(18deg); }
+    .tinder-card img { width: 100%; height: 100%; max-height: calc(100vh - 285px); object-fit: contain; background: #efe8e2; }
     .decision-badge {
       position: absolute;
       top: 18px;
@@ -438,24 +206,13 @@
       padding: 8px 12px;
       font-weight: 900;
       font-size: 24px;
-      letter-spacing: 0.08em;
+      letter-spacing: .08em;
       text-transform: uppercase;
       opacity: 0;
       pointer-events: none;
-      transform: rotate(-10deg);
     }
-
-    .decision-badge.accept-badge {
-      left: 18px;
-      color: var(--good);
-    }
-
-    .decision-badge.reject-badge {
-      right: 18px;
-      color: var(--bad);
-      transform: rotate(10deg);
-    }
-
+    .accept-badge { left: 18px; color: var(--good); transform: rotate(-10deg); }
+    .reject-badge { right: 18px; color: var(--bad); transform: rotate(10deg); }
     .swipe-hint {
       position: absolute;
       left: 50%;
@@ -464,170 +221,39 @@
       z-index: 2;
       padding: 7px 10px;
       border-radius: 999px;
-      background: rgba(29, 23, 21, 0.72);
+      background: rgba(29,23,21,.72);
       color: #fff;
       font-size: 12px;
       pointer-events: none;
     }
-
-    .tinder-info {
-      padding: 12px 14px 14px;
-      border-top: 1px solid var(--line);
-    }
-
-    .tinder-info strong {
-      display: block;
-      font-size: 16px;
-    }
-
-    .tinder-info span {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .tinder-controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      width: min(520px, 100%);
-      margin-top: 10px;
-    }
-
-    .tinder-controls button {
-      min-height: 48px;
-      padding: 13px 12px;
-      font-weight: 800;
-      color: #fff;
-      border: 0;
-    }
-
-    .tinder-tools {
-      display: grid;
-      grid-template-columns: 1fr;
-      width: min(520px, 100%);
-      margin-top: 8px;
-    }
-
-    .tinder-tools button {
-      min-height: 42px;
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.2);
-      color: #fff;
-    }
-
-    .tinder-tools button:disabled {
-      cursor: not-allowed;
-      opacity: 0.45;
-    }
-
-    .reject {
-      background: var(--bad);
-    }
-
-    .accept {
-      background: var(--good);
-    }
-
-    .tinder-empty {
-      width: min(520px, 100%);
-      padding: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      text-align: center;
-    }
-
+    .tinder-info { padding: 12px 14px 14px; border-top: 1px solid var(--line); }
+    .tinder-info strong { display: block; font-size: 16px; }
+    .tinder-info span { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.35; }
+    .tinder-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: min(520px, 100%); margin-top: 10px; }
+    .tinder-controls button { min-height: 48px; padding: 13px 12px; font-weight: 800; color: #fff; border: 0; }
+    .tinder-tools { display: grid; width: min(520px, 100%); margin-top: 8px; }
+    .tinder-tools button { min-height: 42px; background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); color: #fff; }
+    .reject { background: var(--bad); }
+    .accept { background: var(--good); }
+    .tinder-empty { width: min(520px, 100%); padding: 28px; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; background: rgba(255,255,255,.08); text-align: center; }
     @media (max-width: 980px) {
-      .bar, main {
-        display: block;
-      }
-
-      .actions {
-        justify-content: flex-start;
-        margin-top: 12px;
-      }
-
+      .bar, main { display: block; }
+      .actions { justify-content: flex-start; margin-top: 12px; }
       aside {
         position: fixed;
         inset: 0;
         z-index: 90;
         display: none;
-        grid-template-rows: minmax(0, 1fr) auto;
+        grid-template-rows: clamp(150px, 32dvh, 260px) minmax(0, 1fr);
         max-height: none;
-        margin: 0;
         border: 0;
         border-radius: 0;
       }
-
-      body.detail-open aside {
-        display: grid;
-      }
-
-      .preview-wrap {
-        min-height: 0;
-      }
-
-      .preview {
-        max-height: 54dvh;
-        object-fit: contain;
-        background: #ebe3dc;
-      }
-
-      .review {
-        max-height: 46dvh;
-        overflow: auto;
-        padding-bottom: max(16px, env(safe-area-inset-bottom));
-      }
-
-      .detail-close {
-        display: block;
-        width: 100%;
-        margin-bottom: 12px;
-        background: var(--ink);
-        border-color: var(--ink);
-        color: #fff;
-      }
-
-      .tinder-top {
-        grid-template-columns: 1fr auto;
-        padding: 10px 12px;
-      }
-
-      .tinder-stage {
-        justify-items: center;
-        align-content: stretch;
-        padding: 10px 10px 14px;
-      }
-
-      .tinder-card {
-        width: min(100%, 430px);
-        max-height: calc(100dvh - 180px);
-      }
-
-      .tinder-card img {
-        max-height: calc(100dvh - 310px);
-      }
-
-      .tinder-info {
-        padding: 10px 12px 12px;
-      }
-
-      .tinder-controls {
-        width: min(100%, 430px);
-        gap: 8px;
-      }
-
-      .tinder-controls button {
-        min-height: 54px;
-        padding: 12px 8px;
-      }
-
-      .tinder-tools {
-        width: min(100%, 430px);
-      }
+      body.detail-open aside { display: grid; }
+      .preview-wrap { min-height: 0; overflow: hidden; }
+      .preview { width: 100%; height: 100%; object-fit: contain; object-position: center top; }
+      .review { min-height: 0; overflow: auto; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+      .detail-close { display: block; width: 100%; margin-bottom: 12px; background: var(--ink); border-color: var(--ink); color: #fff; }
     }
   </style>
 </head>
@@ -637,9 +263,9 @@
       <div>
         <div class="title-row">
           <h1>Outfit Auswahl</h1>
-          <span class="version-badge">v1.5 Stable Detail</span>
+          <span class="version-badge">v1.6 Mobile Sync</span>
         </div>
-        <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Alles wird lokal im Browser gespeichert.</div>
+        <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Mit Handy-Detailansicht und Cloud-Speicherung pro Name.</div>
       </div>
       <div class="actions">
         <button id="startTinder" class="dark">Tinder Modus starten</button>
@@ -655,7 +281,6 @@
       <div class="filters" id="filters"></div>
       <div class="grid" id="grid"></div>
     </section>
-
     <aside id="detail"></aside>
   </main>
 
@@ -716,15 +341,8 @@
     let selectedId = outfits[0].id;
     let activeGroup = "Alle";
     let reviews = loadReviews();
-    let tinder = {
-      active: false,
-      round: 1,
-      pool: [],
-      index: 0,
-      nextPool: [],
-      history: [],
-      animating: false
-    };
+    let detailReady = false;
+    let tinder = { active: false, round: 1, pool: [], index: 0, nextPool: [], history: [], animating: false };
 
     const grid = document.getElementById("grid");
     const detail = document.getElementById("detail");
@@ -732,46 +350,41 @@
     const tinderModal = document.getElementById("tinderModal");
     const tinderStatus = document.getElementById("tinderStatus");
     const tinderStage = document.getElementById("tinderStage");
-    let detailReady = false;
 
     function loadReviews() {
-      try {
-        return JSON.parse(localStorage.getItem(storeKey)) || {};
-      } catch {
-        return {};
-      }
+      try { return JSON.parse(localStorage.getItem(storeKey)) || {}; } catch { return {}; }
     }
-
-    function saveReviews() {
-      localStorage.setItem(storeKey, JSON.stringify(reviews));
-    }
-
-    function reviewFor(id) {
-      return reviews[id] || { rating: 0, favorite: false, comment: "", tinderStars: 0, rejected: false };
-    }
-
-    function groups() {
-      return ["Alle", ...Array.from(new Set(outfits.map(item => item.group)))];
-    }
+    function saveReviews() { localStorage.setItem(storeKey, JSON.stringify(reviews)); }
+    function reviewFor(id) { return reviews[id] || { rating: 0, favorite: false, comment: "", tinderStars: 0, rejected: false }; }
+    function filteredOutfits() { return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup); }
+    function isMobileLayout() { return window.matchMedia("(max-width: 980px)").matches; }
 
     function renderFilters() {
-      filters.innerHTML = "";
-      groups().forEach(group => {
-        const button = document.createElement("button");
-        button.className = "chip" + (activeGroup === group ? " active" : "");
-        button.textContent = group;
-        button.addEventListener("click", () => {
-          activeGroup = group;
-          const visible = filteredOutfits();
-          if (!visible.some(item => item.id === selectedId) && visible[0]) selectedId = visible[0].id;
-          render();
-        });
-        filters.appendChild(button);
-      });
+      const groups = ["Alle", ...Array.from(new Set(outfits.map(item => item.group)))];
+      filters.innerHTML = groups.map(group => `<button class="chip${activeGroup === group ? " active" : ""}" data-group="${group}">${group}</button>`).join("");
+      filters.querySelectorAll("button").forEach(button => button.addEventListener("click", () => {
+        activeGroup = button.dataset.group;
+        const visible = filteredOutfits();
+        if (!visible.some(item => item.id === selectedId) && visible[0]) selectedId = visible[0].id;
+        render();
+      }));
     }
 
-    function filteredOutfits() {
-      return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup);
+    function renderGrid() {
+      const items = filteredOutfits();
+      grid.innerHTML = items.map(item => {
+        const review = reviewFor(item.id);
+        const score = `${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}`;
+        return `<article class="card${item.id === selectedId ? " selected" : ""}" data-id="${item.id}">
+          <img class="thumb" src="${item.file}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">
+          <div class="meta">
+            <div class="name">${item.id}. ${escapeHtml(item.name)}</div>
+            <div class="tagline">${escapeHtml(item.group)}</div>
+            <div class="scoreline"><span data-scoreline>${score}</span><span data-fav class="${review.favorite ? "fav" : ""}">${review.favorite ? "Favorit" : ""}</span></div>
+          </div>
+        </article>`;
+      }).join("") || '<div class="empty">Keine Designs in diesem Filter.</div>';
+      grid.querySelectorAll(".card").forEach(card => card.addEventListener("click", () => selectOutfit(card.dataset.id, true)));
     }
 
     function selectOutfit(id, openMobileDetail = false) {
@@ -782,9 +395,7 @@
     }
 
     function updateSelectedCard() {
-      grid.querySelectorAll(".card").forEach(card => {
-        card.classList.toggle("selected", card.dataset.id === selectedId);
-      });
+      grid.querySelectorAll(".card").forEach(card => card.classList.toggle("selected", card.dataset.id === selectedId));
     }
 
     function updateCardMeta(id) {
@@ -793,465 +404,160 @@
       const review = reviewFor(id);
       const score = card.querySelector("[data-scoreline]");
       const fav = card.querySelector("[data-fav]");
-      if (score) {
-        score.textContent = `${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}`;
-      }
-      if (fav) {
-        fav.className = review.favorite ? "fav" : "";
-        fav.textContent = review.favorite ? "Favorit" : "";
-      }
-    }
-
-    function moveDetail(direction) {
-      const items = filteredOutfits();
-      if (!items.length) return;
-      const currentIndex = Math.max(0, items.findIndex(item => item.id === selectedId));
-      const nextIndex = (currentIndex + direction + items.length) % items.length;
-      selectOutfit(items[nextIndex].id, true);
-    }
-
-    function renderGrid() {
-      const items = filteredOutfits();
-      grid.innerHTML = "";
-      if (!items.length) {
-        grid.innerHTML = '<div class="empty">Keine Designs in diesem Filter.</div>';
-        return;
-      }
-      items.forEach(item => {
-        const review = reviewFor(item.id);
-        const card = document.createElement("article");
-        card.className = "card" + (item.id === selectedId ? " selected" : "");
-        card.dataset.id = item.id;
-        card.addEventListener("click", event => {
-          event.preventDefault();
-          selectOutfit(item.id, true);
-        });
-
-        card.innerHTML = `
-          <img class="thumb" src="${item.file}" alt="${item.name}" loading="lazy" decoding="async">
-          <div class="meta">
-            <div class="name">${item.id}. ${item.name}</div>
-            <div class="tagline">${item.group}</div>
-            <div class="scoreline">
-              <span data-scoreline>${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}</span>
-              <span data-fav class="${review.favorite ? "fav" : ""}">${review.favorite ? "Favorit" : ""}</span>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function renderDetail() {
-      const item = outfits.find(entry => entry.id === selectedId) || outfits[0];
-      const review = reviewFor(item.id);
-      const rated = outfits.filter(entry => reviewFor(entry.id).rating > 0).length;
-      const favs = outfits.filter(entry => reviewFor(entry.id).favorite).length;
-      const comments = outfits.filter(entry => reviewFor(entry.id).comment.trim()).length;
-      const tinderStars = review.tinderStars || 0;
-
-      if (!detailReady) initDetail();
-
-      const preview = detail.querySelector("#detailPreview");
-      if (preview.dataset.file !== item.file) {
-        preview.removeAttribute("src");
-        preview.alt = item.name;
-        preview.dataset.file = item.file;
-        window.requestAnimationFrame(() => {
-          preview.src = item.file;
-        });
-      }
-
-      detail.querySelector("#detailTitle").textContent = `${item.id}. ${item.name}`;
-      detail.querySelector("#detailDesc").textContent = `${item.note}${tinderStars ? " Tinder Sterne: " + tinderStars + "." : ""}`;
-      detail.querySelector("#summaryRated").textContent = rated;
-      detail.querySelector("#summaryFavs").textContent = favs;
-      detail.querySelector("#summaryComments").textContent = comments;
-      detail.querySelector("#favorite").checked = Boolean(review.favorite);
-
-      detail.querySelectorAll("[data-rating]").forEach(button => {
-        button.classList.toggle("active", review.rating === Number(button.dataset.rating));
-      });
-
-      const comment = detail.querySelector("#comment");
-      if (document.activeElement !== comment) comment.value = review.comment || "";
+      if (score) score.textContent = `${review.rating ? review.rating + "/5" : "nicht bewertet"}${review.tinderStars ? " · " + review.tinderStars + " Stern" + (review.tinderStars === 1 ? "" : "e") : ""}`;
+      if (fav) { fav.className = review.favorite ? "fav" : ""; fav.textContent = review.favorite ? "Favorit" : ""; }
     }
 
     function initDetail() {
       detailReady = true;
-      detail.innerHTML = `
-        <div class="preview-wrap">
-          <img class="preview" id="detailPreview" alt="" loading="eager" decoding="async">
-        </div>
+      detail.innerHTML = `<div class="preview-wrap"><img class="preview" id="detailPreview" alt="" loading="eager" decoding="async"></div>
         <div class="review">
           <button class="detail-close" id="closeDetail" type="button">Zurueck zur Uebersicht</button>
-          <div class="detail-nav">
-            <button id="prevDetail" type="button">Vorheriges</button>
-            <button id="nextDetail" type="button">Naechstes Outfit</button>
-          </div>
-          <h2 id="detailTitle"></h2>
-          <div class="desc" id="detailDesc"></div>
-
-          <div class="summary">
-            <div><strong id="summaryRated">0</strong>bewertet</div>
-            <div><strong id="summaryFavs">0</strong>Favoriten</div>
-            <div><strong id="summaryComments">0</strong>Kommentare</div>
-          </div>
-
-          <div class="field">
-            <label>Bewertung</label>
-            <div class="rating">
-              ${[1, 2, 3, 4, 5].map(score => `<button type="button" data-rating="${score}">${score}</button>`).join("")}
-            </div>
-          </div>
-
-          <div class="field toggle-row">
-            <input id="favorite" type="checkbox">
-            <label for="favorite" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)">Als Favorit markieren</label>
-          </div>
-
-          <div class="field">
-            <label>Kommentar</label>
-            <textarea id="comment" placeholder="Was funktioniert? Was ist zu viel? Was muesste geaendert werden?"></textarea>
-          </div>
-        </div>
-      `;
-
-      detail.querySelectorAll("[data-rating]").forEach(button => {
-        button.addEventListener("click", () => {
-          setReview(selectedId, { rating: Number(button.dataset.rating) });
-        });
-      });
-
+          <div class="detail-nav"><button id="prevDetail" type="button">Vorheriges</button><button id="nextDetail" type="button">Naechstes Outfit</button></div>
+          <h2 id="detailTitle"></h2><div class="desc" id="detailDesc"></div>
+          <div class="summary"><div><strong id="summaryRated">0</strong>bewertet</div><div><strong id="summaryFavs">0</strong>Favoriten</div><div><strong id="summaryComments">0</strong>Kommentare</div></div>
+          <div class="field"><label>Bewertung</label><div class="rating">${[1,2,3,4,5].map(score => `<button type="button" data-rating="${score}">${score}</button>`).join("")}</div></div>
+          <div class="field toggle-row"><input id="favorite" type="checkbox"><label for="favorite" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)">Als Favorit markieren</label></div>
+          <div class="field"><label>Kommentar</label><textarea id="comment" placeholder="Was funktioniert? Was ist zu viel? Was muesste geaendert werden?"></textarea></div>
+        </div>`;
       detail.querySelector("#closeDetail").addEventListener("click", closeDetail);
       detail.querySelector("#prevDetail").addEventListener("click", () => moveDetail(-1));
       detail.querySelector("#nextDetail").addEventListener("click", () => moveDetail(1));
-
-      detail.querySelector("#favorite").addEventListener("change", event => {
-        setReview(selectedId, { favorite: event.target.checked });
-      });
-
-      detail.querySelector("#comment").addEventListener("input", event => {
-        setReview(selectedId, { comment: event.target.value }, false);
-      });
+      detail.querySelectorAll("[data-rating]").forEach(button => button.addEventListener("click", () => setReview(selectedId, { rating: Number(button.dataset.rating) })));
+      detail.querySelector("#favorite").addEventListener("change", event => setReview(selectedId, { favorite: event.target.checked }));
+      detail.querySelector("#comment").addEventListener("input", event => setReview(selectedId, { comment: event.target.value }, false));
     }
 
-    function setReview(id, patch, rerender = true) {
-      reviews[id] = { ...reviewFor(id), ...patch };
-      saveReviews();
-      updateCardMeta(id);
-      if (rerender) {
-        renderDetail();
-      }
+    function renderDetail() {
+      if (!detailReady) initDetail();
+      const item = outfits.find(entry => entry.id === selectedId) || outfits[0];
+      const review = reviewFor(item.id);
+      const preview = detail.querySelector("#detailPreview");
+      if (preview.dataset.file !== item.file) { preview.dataset.file = item.file; preview.src = item.file; preview.alt = item.name; }
+      detail.querySelector("#detailTitle").textContent = `${item.id}. ${item.name}`;
+      detail.querySelector("#detailDesc").textContent = `${item.note}${review.tinderStars ? " Tinder Sterne: " + review.tinderStars + "." : ""}`;
+      detail.querySelector("#summaryRated").textContent = outfits.filter(entry => reviewFor(entry.id).rating > 0).length;
+      detail.querySelector("#summaryFavs").textContent = outfits.filter(entry => reviewFor(entry.id).favorite).length;
+      detail.querySelector("#summaryComments").textContent = outfits.filter(entry => reviewFor(entry.id).comment.trim()).length;
+      detail.querySelector("#favorite").checked = Boolean(review.favorite);
+      detail.querySelectorAll("[data-rating]").forEach(button => button.classList.toggle("active", review.rating === Number(button.dataset.rating)));
+      const comment = detail.querySelector("#comment");
+      if (document.activeElement !== comment) comment.value = review.comment || "";
     }
 
-    function escapeHtml(value) {
-      return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+    function moveDetail(direction) {
+      const items = filteredOutfits();
+      const currentIndex = Math.max(0, items.findIndex(item => item.id === selectedId));
+      selectOutfit(items[(currentIndex + direction + items.length) % items.length].id, true);
     }
+    function closeDetail() { document.body.classList.remove("detail-open"); }
+    function setReview(id, patch, rerender = true) { reviews[id] = { ...reviewFor(id), ...patch }; saveReviews(); updateCardMeta(id); if (rerender) renderDetail(); }
 
     function exportRows() {
       return outfits.map(item => {
         const review = reviewFor(item.id);
-        return {
-          id: item.id,
-          name: item.name,
-          group: item.group,
-          file: item.file,
-          rating: review.rating || "",
-          tinderStars: review.tinderStars || 0,
-          rejectedInTinder: review.rejected ? "yes" : "no",
-          favorite: review.favorite ? "yes" : "no",
-          comment: review.comment || ""
-        };
+        return { id: item.id, name: item.name, group: item.group, file: item.file, rating: review.rating || "", tinderStars: review.tinderStars || 0, rejectedInTinder: review.rejected ? "yes" : "no", favorite: review.favorite ? "yes" : "no", comment: review.comment || "" };
       });
     }
-
     function download(filename, mime, content) {
       const blob = new Blob([content], { type: mime });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      link.href = url; link.download = filename; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
     }
-
     function toCsv(rows) {
       const headers = Object.keys(rows[0]);
-      const escapeCell = value => `"${String(value).replaceAll('"', '""')}"`;
-      return [headers.join(","), ...rows.map(row => headers.map(header => escapeCell(row[header])).join(","))].join("\n");
+      const cell = value => `"${String(value).replaceAll('"', '""')}"`;
+      return [headers.join(","), ...rows.map(row => headers.map(header => cell(row[header])).join(","))].join("\n");
     }
 
-    document.getElementById("exportJson").addEventListener("click", () => {
-      download("outfit-auswahl-bewertungen.json", "application/json", JSON.stringify(exportRows(), null, 2));
-    });
-
-    document.getElementById("exportCsv").addEventListener("click", () => {
-      download("outfit-auswahl-bewertungen.csv", "text/csv", toCsv(exportRows()));
-    });
-
-    document.getElementById("clearData").addEventListener("click", () => {
-      if (!confirm("Alle lokalen Bewertungen und Kommentare loeschen?")) return;
-      reviews = {};
-      saveReviews();
-      render();
-    });
-
+    document.getElementById("exportJson").addEventListener("click", () => download("outfit-auswahl-bewertungen.json", "application/json", JSON.stringify(exportRows(), null, 2)));
+    document.getElementById("exportCsv").addEventListener("click", () => download("outfit-auswahl-bewertungen.csv", "text/csv", toCsv(exportRows())));
+    document.getElementById("clearData").addEventListener("click", () => { if (confirm("Alle lokalen Bewertungen und Kommentare loeschen?")) { reviews = {}; saveReviews(); render(); } });
     document.getElementById("startTinder").addEventListener("click", startTinder);
     document.getElementById("closeTinder").addEventListener("click", closeTinder);
-
     document.addEventListener("keydown", event => {
-      if (!tinder.active) return;
-      if (event.key === "Escape") closeTinder();
-      if (event.key === "ArrowLeft") rejectCurrent();
-      if (event.key === "ArrowRight") acceptCurrent();
-    });
-
-    document.addEventListener("keydown", event => {
+      if (tinder.active) { if (event.key === "Escape") closeTinder(); if (event.key === "ArrowLeft") rejectCurrent(); if (event.key === "ArrowRight") acceptCurrent(); }
       if (event.key === "Escape" && document.body.classList.contains("detail-open")) closeDetail();
     });
-
-    function isMobileLayout() {
-      return window.matchMedia("(max-width: 980px)").matches;
-    }
-
-    function closeDetail() {
-      document.body.classList.remove("detail-open");
-    }
-
-    window.addEventListener("resize", () => {
-      if (!isMobileLayout()) document.body.classList.remove("detail-open");
-    });
+    window.addEventListener("resize", () => { if (!isMobileLayout()) closeDetail(); });
 
     function startTinder() {
-      tinder = {
-        active: true,
-        round: 1,
-        pool: filteredOutfits().map(item => item.id),
-        index: 0,
-        nextPool: [],
-        history: [],
-        animating: false
-      };
+      tinder = { active: true, round: 1, pool: filteredOutfits().map(item => item.id), index: 0, nextPool: [], history: [], animating: false };
       document.body.classList.add("tinder-open");
       tinderModal.setAttribute("aria-hidden", "false");
       renderTinder();
     }
-
-    function closeTinder() {
-      tinder.active = false;
-      document.body.classList.remove("tinder-open");
-      tinderModal.setAttribute("aria-hidden", "true");
-      render();
-    }
-
-    function currentTinderItem() {
-      if (!tinder.pool.length || tinder.index >= tinder.pool.length) return null;
-      return outfits.find(item => item.id === tinder.pool[tinder.index]);
-    }
-
+    function closeTinder() { tinder.active = false; document.body.classList.remove("tinder-open"); tinderModal.setAttribute("aria-hidden", "true"); render(); }
+    function currentTinderItem() { return outfits.find(item => item.id === tinder.pool[tinder.index]) || null; }
     function acceptCurrent() {
-      const item = currentTinderItem();
-      if (!item || tinder.animating) return;
-      tinder.animating = true;
-      const review = reviewFor(item.id);
-      rememberTinderStep(item.id, review);
-      setReview(item.id, {
-        tinderStars: (review.tinderStars || 0) + 1,
-        favorite: true,
-        rejected: false
-      }, false);
-      tinder.nextPool.push(item.id);
-      animateDecision("right");
+      const item = currentTinderItem(); if (!item || tinder.animating) return;
+      tinder.animating = true; const review = reviewFor(item.id); rememberTinderStep(item.id, review);
+      setReview(item.id, { tinderStars: (review.tinderStars || 0) + 1, favorite: true, rejected: false }, false);
+      tinder.nextPool.push(item.id); animateDecision("right");
     }
-
     function rejectCurrent() {
-      const item = currentTinderItem();
-      if (!item || tinder.animating) return;
-      tinder.animating = true;
-      rememberTinderStep(item.id, reviewFor(item.id));
-      setReview(item.id, { rejected: true }, false);
-      animateDecision("left");
+      const item = currentTinderItem(); if (!item || tinder.animating) return;
+      tinder.animating = true; rememberTinderStep(item.id, reviewFor(item.id)); setReview(item.id, { rejected: true }, false); animateDecision("left");
     }
-
-    function rememberTinderStep(id, reviewBefore) {
-      tinder.history.push({
-        id,
-        round: tinder.round,
-        pool: [...tinder.pool],
-        index: tinder.index,
-        nextPool: [...tinder.nextPool],
-        reviewBefore: { ...reviewBefore }
-      });
-    }
-
+    function rememberTinderStep(id, reviewBefore) { tinder.history.push({ id, round: tinder.round, pool: [...tinder.pool], index: tinder.index, nextPool: [...tinder.nextPool], reviewBefore: { ...reviewBefore } }); }
     function undoTinder() {
       if (tinder.animating || !tinder.history.length) return;
-      const last = tinder.history.pop();
-      tinder.round = last.round;
-      tinder.pool = last.pool;
-      tinder.index = last.index;
-      tinder.nextPool = last.nextPool;
-      reviews[last.id] = last.reviewBefore;
-      saveReviews();
-      renderTinder();
+      const last = tinder.history.pop(); tinder.round = last.round; tinder.pool = last.pool; tinder.index = last.index; tinder.nextPool = last.nextPool; reviews[last.id] = last.reviewBefore; saveReviews(); renderTinder();
     }
-
     function animateDecision(direction) {
       const card = document.getElementById("swipeCard");
-      if (!card) {
-        tinder.animating = false;
-        advanceTinder();
-        return;
-      }
+      if (!card) { tinder.animating = false; advanceTinder(); return; }
       card.classList.add(direction === "right" ? "fly-right" : "fly-left");
-      window.setTimeout(() => {
-        tinder.animating = false;
-        advanceTinder();
-      }, 220);
+      window.setTimeout(() => { tinder.animating = false; advanceTinder(); }, 220);
     }
-
     function advanceTinder() {
       tinder.index += 1;
-      if (tinder.index >= tinder.pool.length) {
-        tinder.round += 1;
-        tinder.pool = Array.from(new Set(tinder.nextPool));
-        tinder.index = 0;
-        tinder.nextPool = [];
-      }
+      if (tinder.index >= tinder.pool.length) { tinder.round += 1; tinder.pool = Array.from(new Set(tinder.nextPool)); tinder.index = 0; tinder.nextPool = []; }
       renderTinder();
     }
-
     function renderTinder() {
       if (!tinder.pool.length) {
         tinderStatus.textContent = "Auswahl abgeschlossen.";
-        tinderStage.innerHTML = `
-          <div class="tinder-empty">
-            <h3>Fertig verdichtet</h3>
-            <p>Es ist kein Outfit mehr fuer die naechste Runde uebrig. Die Sterne bleiben in der Uebersicht und im Export erhalten.</p>
-            <button class="primary" onclick="closeTinder()">Zurueck zur Auswahl</button>
-          </div>
-        `;
+        tinderStage.innerHTML = `<div class="tinder-empty"><h3>Fertig verdichtet</h3><p>Es ist kein Outfit mehr fuer die naechste Runde uebrig. Die Sterne bleiben in der Uebersicht und im Export erhalten.</p><button class="primary" onclick="closeTinder()">Zurueck zur Auswahl</button></div>`;
         return;
       }
-
-      const item = currentTinderItem();
-      if (!item) {
-        tinder.pool = [];
-        renderTinder();
-        return;
-      }
+      const item = currentTinderItem(); if (!item) { tinder.pool = []; renderTinder(); return; }
       const review = reviewFor(item.id);
       tinderStatus.textContent = `Runde ${tinder.round} · ${tinder.index + 1}/${tinder.pool.length} · bisher ${review.tinderStars || 0} Sterne`;
-      tinderStage.innerHTML = `
-        <div class="tinder-card" id="swipeCard">
-          <div class="decision-badge accept-badge" id="acceptBadge">OK</div>
-          <div class="decision-badge reject-badge" id="rejectBadge">Raus</div>
-          <div class="swipe-hint">Wischen oder Buttons nutzen</div>
-          <img src="${item.file}" alt="${item.name}">
-          <div class="tinder-info">
-            <strong>${item.id}. ${item.name}</strong>
-            <span>${item.group} · ${item.note}</span>
-          </div>
-        </div>
-        <div class="tinder-controls">
-          <button class="reject" id="rejectOutfit" type="button">Links: faellt raus</button>
-          <button class="accept" id="acceptOutfit" type="button">Rechts: kommt in Frage</button>
-        </div>
-        <div class="tinder-tools">
-          <button id="undoTinder" ${tinder.history.length ? "" : "disabled"}>Letzte Entscheidung zuruecknehmen</button>
-        </div>
-      `;
+      tinderStage.innerHTML = `<div class="tinder-card" id="swipeCard"><div class="decision-badge accept-badge" id="acceptBadge">OK</div><div class="decision-badge reject-badge" id="rejectBadge">Raus</div><div class="swipe-hint">Wischen oder Buttons nutzen</div><img src="${item.file}" alt="${escapeHtml(item.name)}"><div class="tinder-info"><strong>${item.id}. ${escapeHtml(item.name)}</strong><span>${escapeHtml(item.group)} · ${escapeHtml(item.note)}</span></div></div><div class="tinder-controls"><button class="reject" id="rejectOutfit" type="button">Links: faellt raus</button><button class="accept" id="acceptOutfit" type="button">Rechts: kommt in Frage</button></div><div class="tinder-tools"><button id="undoTinder" ${tinder.history.length ? "" : "disabled"}>Letzte Entscheidung zuruecknehmen</button></div>`;
       document.getElementById("rejectOutfit").addEventListener("click", rejectCurrent);
       document.getElementById("acceptOutfit").addEventListener("click", acceptCurrent);
       document.getElementById("undoTinder").addEventListener("click", undoTinder);
       attachSwipe(document.getElementById("swipeCard"));
     }
-
     function attachSwipe(card) {
-      let startX = 0;
-      let startY = 0;
-      let dragging = false;
-
-      card.addEventListener("pointerdown", event => {
-        if (tinder.animating) return;
-        dragging = true;
-        startX = event.clientX;
-        startY = event.clientY;
-        card.classList.add("dragging");
-        try {
-          card.setPointerCapture(event.pointerId);
-        } catch {
-          dragging = false;
-          card.classList.remove("dragging");
-        }
-      });
-
+      let startX = 0, startY = 0, dragging = false;
+      card.addEventListener("pointerdown", event => { if (tinder.animating) return; dragging = true; startX = event.clientX; startY = event.clientY; card.classList.add("dragging"); try { card.setPointerCapture(event.pointerId); } catch { dragging = false; } });
       card.addEventListener("pointermove", event => {
         if (!dragging) return;
-        const dx = event.clientX - startX;
-        const dy = event.clientY - startY;
+        const dx = event.clientX - startX, dy = event.clientY - startY;
         if (Math.abs(dx) > 8) event.preventDefault();
-        const tilt = Math.max(-10, Math.min(10, dx / 18));
         const confidence = Math.min(1, Math.abs(dx) / 120);
-        const acceptBadge = document.getElementById("acceptBadge");
-        const rejectBadge = document.getElementById("rejectBadge");
-        card.style.transform = `translate(${dx}px, ${dy * 0.2}px) rotate(${tilt}deg)`;
-        if (acceptBadge) acceptBadge.style.opacity = dx > 0 ? confidence : 0;
-        if (rejectBadge) rejectBadge.style.opacity = dx < 0 ? confidence : 0;
+        card.style.transform = `translate(${dx}px, ${dy * .2}px) rotate(${Math.max(-10, Math.min(10, dx / 18))}deg)`;
+        document.getElementById("acceptBadge").style.opacity = dx > 0 ? confidence : 0;
+        document.getElementById("rejectBadge").style.opacity = dx < 0 ? confidence : 0;
       });
-
       card.addEventListener("pointerup", event => {
-        if (!dragging) return;
-        dragging = false;
-        card.classList.remove("dragging");
-        try {
-          if (card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
-        } catch {}
-        const dx = event.clientX - startX;
-        const threshold = Math.min(120, Math.max(82, card.offsetWidth * 0.24));
-        if (dx > threshold) {
-          acceptCurrent();
-          return;
-        }
-        if (dx < -threshold) {
-          rejectCurrent();
-          return;
-        }
+        if (!dragging) return; dragging = false; card.classList.remove("dragging");
+        const dx = event.clientX - startX; const threshold = Math.min(120, Math.max(82, card.offsetWidth * .24));
+        if (dx > threshold) return acceptCurrent();
+        if (dx < -threshold) return rejectCurrent();
         resetSwipeCard(card);
       });
-
-      card.addEventListener("pointercancel", event => {
-        dragging = false;
-        card.classList.remove("dragging");
-        try {
-          if (card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
-        } catch {}
-        resetSwipeCard(card);
-      });
+      card.addEventListener("pointercancel", () => { dragging = false; card.classList.remove("dragging"); resetSwipeCard(card); });
     }
-
-    function resetSwipeCard(card) {
-      const acceptBadge = document.getElementById("acceptBadge");
-      const rejectBadge = document.getElementById("rejectBadge");
-      card.style.transform = "";
-      if (acceptBadge) acceptBadge.style.opacity = 0;
-      if (rejectBadge) rejectBadge.style.opacity = 0;
-    }
-
-    function render() {
-      renderFilters();
-      renderGrid();
-      renderDetail();
-    }
-
+    function resetSwipeCard(card) { card.style.transform = ""; document.getElementById("acceptBadge").style.opacity = 0; document.getElementById("rejectBadge").style.opacity = 0; }
+    function escapeHtml(value) { return String(value || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"); }
+    function render() { renderFilters(); renderGrid(); renderDetail(); }
     render();
   </script>
+  <script src="/sync.js" defer></script>
+  <script src="/app-enhancements.js" defer></script>
 </body>
 </html>
