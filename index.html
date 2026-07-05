@@ -57,7 +57,7 @@
       font-weight: 800;
     }
     .subtitle { margin-top: 4px; color: var(--muted); font-size: 13px; }
-    .actions, .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions, .filters { display: flex; gap: 6px; flex-wrap: wrap; }
     .actions { justify-content: flex-end; }
     button, input, textarea { font: inherit; color: inherit; }
     button, .chip {
@@ -66,6 +66,15 @@
       border-radius: 8px;
       padding: 9px 11px;
       cursor: pointer;
+    }
+    .actions button,
+    .actions .button-link {
+      min-height: 34px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      color: inherit;
     }
     button:hover, .chip:hover { border-color: #c7b8ae; }
     button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -78,7 +87,7 @@
       margin: 0 auto;
       padding: 18px;
     }
-    .filters { margin-bottom: 14px; }
+    .filters { display: none; margin-bottom: 14px; }
     .chip.active { background: var(--ink); border-color: var(--ink); color: #fff; }
     .grid {
       display: grid;
@@ -263,12 +272,13 @@
       <div>
         <div class="title-row">
           <h1>Outfit Auswahl</h1>
-          <span class="version-badge">v1.7 Admin Sync</span>
+          <span class="version-badge">v1.8 Admin UI</span>
         </div>
         <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Mit Handy-Detailansicht und Cloud-Speicherung pro Name.</div>
       </div>
       <div class="actions">
         <button id="startTinder" class="dark">Tinder Modus starten</button>
+        <a class="button-link" href="/admin.html">Admin</a>
         <button id="exportJson">JSON exportieren</button>
         <button id="exportCsv">CSV exportieren</button>
         <button id="clearData">Bewertungen leeren</button>
@@ -361,10 +371,18 @@
     function reviewFor(id) { return reviews[id] || { rating: 0, favorite: false, comment: "", tinderStars: 0, rejected: false }; }
     async function loadOutfits() {
       try {
-        const response = await fetch("/outfits.json", { cache: "no-store" });
-        if (!response.ok) throw new Error("outfits.json konnte nicht geladen werden");
-        const data = await response.json();
-        if (!Array.isArray(data) || !data.length) throw new Error("outfits.json ist leer");
+        let data;
+        const apiResponse = await fetch("/api/outfits", { cache: "no-store" });
+        if (apiResponse.ok) {
+          const payload = await apiResponse.json();
+          data = payload.outfits;
+        }
+        if (!Array.isArray(data) || !data.length) {
+          const response = await fetch("/outfits.json", { cache: "no-store" });
+          if (!response.ok) throw new Error("outfits.json konnte nicht geladen werden");
+          data = await response.json();
+        }
+        if (!Array.isArray(data) || !data.length) throw new Error("Keine Outfits gefunden");
         outfits = data
           .filter(item => item && item.active !== false)
           .map((item, index) => ({
