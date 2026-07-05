@@ -24,6 +24,8 @@
     localStorage.setItem(USER_KEY, userName);
 
     patchLocalStorage();
+    window.addEventListener("outfit-reviews-changed", handleReviewChange);
+    window.outfitSyncNow = queuePost;
     renderSyncPanel("Verbinde...", `${userName} · ${project}`);
 
     const remote = await fetchState(userName);
@@ -89,10 +91,18 @@
   }
 
   function patchLocalStorage() {
-    localStorage.setItem = function patchedSetItem(key, value) {
-      originalSetItem(key, value);
-      if (key === REVIEW_KEY && onlineReady && !posting) queuePost();
-    };
+    try {
+      localStorage.setItem = function patchedSetItem(key, value) {
+        originalSetItem(key, value);
+        if (key === REVIEW_KEY) handleReviewChange();
+      };
+    } catch (error) {
+      console.warn("Could not patch localStorage.setItem:", error);
+    }
+  }
+
+  function handleReviewChange() {
+    if (onlineReady && !posting) queuePost();
   }
 
   function queuePost() {
