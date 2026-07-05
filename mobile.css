@@ -1,11 +1,14 @@
-/* v1.6 mobile usability refinements */
+/* v1.10 mobile usability refinements */
 
 .preview {
   max-height: 100%;
   object-fit: contain;
 }
 
-.actions a[href="/admin.html"] {
+.actions a[href="/admin.html"],
+.actions #exportJson,
+.actions #exportCsv,
+.actions #clearData {
   display: none !important;
 }
 
