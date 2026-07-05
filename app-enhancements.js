@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = "v1.9 Hidden Admin";
+  const VERSION = "v1.10 Clean App";
   const REVIEW_KEY = "outfit-selection-v1";
   const USER_KEY = "outfit-selection-user-v1";
   const PROJECT_KEY = "outfit-selection-project-v1";
@@ -16,6 +16,7 @@
     addHiddenAdminUnlock();
     restoreCompactMode();
     addUtilityActions();
+    moveAdminActionsOutOfApp();
     addDetailGestures();
   }
 
@@ -79,6 +80,16 @@
     actions.insertBefore(compactButton, actions.children[1] || null);
     actions.insertBefore(shareButton, actions.children[2] || null);
     actions.insertBefore(localTopButton, actions.children[3] || null);
+  }
+
+  function moveAdminActionsOutOfApp() {
+    ["toggleCompactImage", "copyShareLink", "exportJson", "exportCsv", "clearData"].forEach(id => {
+      const node = document.getElementById(id);
+      if (node) node.remove();
+    });
+
+    const visibleAdminLink = document.querySelector('.actions .button-link[href="/admin.html"]');
+    if (visibleAdminLink) visibleAdminLink.remove();
   }
 
   async function copyShareLink() {
