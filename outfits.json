@@ -1,0 +1,306 @@
+[
+  {
+    "active": true,
+    "id": "00",
+    "file": "images/00-armor-outfit-dark.jpg",
+    "name": "Armor Outfit Dunkel",
+    "group": "Armor",
+    "note": "Erster Panzerlook im dunklen Licht."
+  },
+  {
+    "active": true,
+    "id": "01",
+    "file": "images/01-armor-outfit-deep-v.jpg",
+    "name": "Armor Deep V",
+    "group": "Armor",
+    "note": "Mehr Dekollete unter dem Schulterpanzer."
+  },
+  {
+    "active": true,
+    "id": "02",
+    "file": "images/02-armor-outfit-bright.jpg",
+    "name": "Armor Kataloglicht",
+    "group": "Armor",
+    "note": "Helleres Licht, Panzer und Outfit besser lesbar."
+  },
+  {
+    "active": true,
+    "id": "03",
+    "file": "images/03-armor-skirt-boots.jpg",
+    "name": "Armor + Rock",
+    "group": "Armor",
+    "note": "Schulterpanzer mit Rock und Overknees."
+  },
+  {
+    "active": true,
+    "id": "04",
+    "file": "images/04-skirt-sleeves-fabric-boots.jpg",
+    "name": "Rock + Stoffstiefel",
+    "group": "Basis",
+    "note": "Ohne Panzer, noch mit Aermeln."
+  },
+  {
+    "active": true,
+    "id": "05",
+    "file": "images/05-sleeveless-high-heel-boots.jpg",
+    "name": "Sleeveless Test",
+    "group": "Basis",
+    "note": "Aermellos, aber noch mit hohem Absatz."
+  },
+  {
+    "active": true,
+    "id": "06",
+    "file": "images/06-base-flat-boots.jpg",
+    "name": "Basis Flat Boots",
+    "group": "Basis",
+    "note": "Fixe Stoff-Overknees mit flachem Absatz."
+  },
+  {
+    "active": true,
+    "id": "07",
+    "file": "images/07-normal-ribbed-a-line.jpg",
+    "name": "Normal Ribbed A-Line",
+    "group": "Normal",
+    "note": "Cleaner Rollkragen-/A-Linien-Look."
+  },
+  {
+    "active": true,
+    "id": "08",
+    "file": "images/08-normal-wrap-skirt.jpg",
+    "name": "Normal Wrap Skirt",
+    "group": "Normal",
+    "note": "Wickelrock und Square-Neck."
+  },
+  {
+    "active": true,
+    "id": "09",
+    "file": "images/09-normal-knit-dress.jpg",
+    "name": "Normal Knit Dress",
+    "group": "Normal",
+    "note": "Kurzes Strickkleid mit Keyhole."
+  },
+  {
+    "active": true,
+    "id": "10",
+    "file": "images/10-sexy-draped-wrap.jpg",
+    "name": "Sexy Draped Wrap",
+    "group": "Sexy",
+    "note": "Drapierter Wickel-Look."
+  },
+  {
+    "active": true,
+    "id": "11",
+    "file": "images/11-sexy-one-shoulder.jpg",
+    "name": "Sexy One Shoulder",
+    "group": "Sexy",
+    "note": "Asymmetrische Schulter und Schlitz."
+  },
+  {
+    "active": true,
+    "id": "12",
+    "file": "images/12-sexy-sweetheart-cutout.jpg",
+    "name": "Sexy Sweetheart Cutout",
+    "group": "Sexy",
+    "note": "Sweetheart-Top mit Cutout."
+  },
+  {
+    "active": true,
+    "id": "13",
+    "file": "images/13-more-sexy-halter-crop.jpg",
+    "name": "Halter Crop",
+    "group": "Mehr Sexy",
+    "note": "Crop Top und Micro-Mini."
+  },
+  {
+    "active": true,
+    "id": "14",
+    "file": "images/14-more-sexy-bandeau-cutout.jpg",
+    "name": "Bandeau Cutout",
+    "group": "Mehr Sexy",
+    "note": "Bandeau und asymmetrischer Cutout."
+  },
+  {
+    "active": true,
+    "id": "15",
+    "file": "images/15-more-sexy-deep-body-wrap.jpg",
+    "name": "Deep Body Wrap",
+    "group": "Mehr Sexy",
+    "note": "Tiefer Body plus Wickelteil."
+  },
+  {
+    "active": true,
+    "id": "16",
+    "file": "images/16-extreme-harness-wrap.jpg",
+    "name": "Harness Wrap",
+    "group": "Extrem",
+    "note": "Erster extremer Harness-Wrap-Look."
+  },
+  {
+    "active": true,
+    "id": "17",
+    "file": "images/17-bold-plunging-body.jpg",
+    "name": "Plunging Body",
+    "group": "Bold",
+    "note": "Sehr tiefer Body ohne Rock."
+  },
+  {
+    "active": true,
+    "id": "18",
+    "file": "images/18-bold-hotpants-bra-layer.jpg",
+    "name": "Hotpants Bra Layer",
+    "group": "Bold",
+    "note": "Hotpants, Bra und transparenter Layer."
+  },
+  {
+    "active": true,
+    "id": "19",
+    "file": "images/19-bold-underboob-paperbag.jpg",
+    "name": "Underboob Paperbag",
+    "group": "Underboob",
+    "note": "Underboob-Crop und Paperbag-Shorts."
+  },
+  {
+    "active": true,
+    "id": "20",
+    "file": "images/20-bold-corset-body.jpg",
+    "name": "Corset Body",
+    "group": "Body",
+    "note": "Lingerie-inspirierter Corset-Body."
+  },
+  {
+    "active": true,
+    "id": "21",
+    "file": "images/21-bold-bra-boxer-shorts.jpg",
+    "name": "Bra + Boxer Shorts",
+    "group": "Bold",
+    "note": "Lockerere Shorts und Bra."
+  },
+  {
+    "active": true,
+    "id": "22",
+    "file": "images/22-bold-asym-romper.jpg",
+    "name": "Asym Romper",
+    "group": "Bold",
+    "note": "Asymmetrischer Romper mit Side-Cutout."
+  },
+  {
+    "active": true,
+    "id": "23",
+    "file": "images/23-bold-mesh-overlay.jpg",
+    "name": "Mesh Overlay",
+    "group": "Bold",
+    "note": "Mesh-Minikleid ueber Bra/Briefs."
+  },
+  {
+    "active": true,
+    "id": "24",
+    "file": "images/24-bold-deep-v-shorts.jpg",
+    "name": "Deep V + Shorts",
+    "group": "Bold",
+    "note": "Super Deep V mit Micro-Shorts."
+  },
+  {
+    "active": true,
+    "id": "25",
+    "file": "images/25-bold-strappy-hotpants.jpg",
+    "name": "Strappy Hotpants",
+    "group": "Bold",
+    "note": "Grafisches Strap-Set mit Hotpants."
+  },
+  {
+    "active": true,
+    "id": "26",
+    "file": "images/26-bold-extreme-sci-fi-festival.jpg",
+    "name": "Sci-Fi Festival Extreme",
+    "group": "Extrem",
+    "note": "Radikaler Stoff-Harness-Festival-Look."
+  },
+  {
+    "active": true,
+    "id": "27",
+    "file": "images/27-underboob-paperbag.jpg",
+    "name": "Underboob Paperbag V2",
+    "group": "Underboob",
+    "note": "Tragbare Underboob-Variante."
+  },
+  {
+    "active": true,
+    "id": "28",
+    "file": "images/28-underboob-halter-hotpants.jpg",
+    "name": "Underboob Halter",
+    "group": "Underboob",
+    "note": "Halter-Top mit Hotpants."
+  },
+  {
+    "active": true,
+    "id": "29",
+    "file": "images/29-underboob-asym-panel.jpg",
+    "name": "Underboob Asym Panel",
+    "group": "Underboob",
+    "note": "Asymmetrisches Panel, gut panzerkompatibel."
+  },
+  {
+    "active": true,
+    "id": "30",
+    "file": "images/30-underboob-cargo.jpg",
+    "name": "Underboob Cargo",
+    "group": "Underboob",
+    "note": "Utility/Festival mit Cargo-Shorts."
+  },
+  {
+    "active": true,
+    "id": "31",
+    "file": "images/31-underboob-strappy-cutout.jpg",
+    "name": "Underboob Strappy Cutout",
+    "group": "Underboob",
+    "note": "Mutigste Underboob-Variante."
+  },
+  {
+    "active": true,
+    "id": "32",
+    "file": "images/32-bh-triangle-mini-skirt.jpg",
+    "name": "Triangle BH + Mini",
+    "group": "BH/Bikini",
+    "note": "Triangle-BH mit cleanem Minirock."
+  },
+  {
+    "active": true,
+    "id": "33",
+    "file": "images/33-bh-sporty-hotpants.jpg",
+    "name": "Sport BH + Hotpants",
+    "group": "BH/Bikini",
+    "note": "Sportlicher BH mit High-Waist-Hotpants."
+  },
+  {
+    "active": true,
+    "id": "34",
+    "file": "images/34-bikini-sheer-shirt.jpg",
+    "name": "Bikini + Sheer Shirt",
+    "group": "BH/Bikini",
+    "note": "Kompletter Bikini mit transparenter Stofflage."
+  },
+  {
+    "active": true,
+    "id": "35",
+    "file": "images/35-bra-wrap-skirt.jpg",
+    "name": "Bra + Wrap Skirt",
+    "group": "BH/Bikini",
+    "note": "Underwire-BH mit asymmetrischem Wickelrock."
+  },
+  {
+    "active": true,
+    "id": "36",
+    "file": "images/36-bandeau-shorts.jpg",
+    "name": "Bandeau + Shorts",
+    "group": "BH/Bikini",
+    "note": "Bandeau-Bikini-Top mit High-Waist-Shorts."
+  },
+  {
+    "active": true,
+    "id": "37",
+    "file": "images/37-bikini-mesh-wrap.jpg",
+    "name": "Bikini Mesh Wrap",
+    "group": "BH/Bikini",
+    "note": "Mutiger Bikini-Look mit Mesh-Wrap."
+  }
+]
