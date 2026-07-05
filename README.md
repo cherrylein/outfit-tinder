@@ -2,7 +2,7 @@
 
 Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 
-Aktueller Stand: **v1.7 Admin Sync**
+Aktueller Stand: **v1.9 Hidden Admin**
 
 ## Funktionen
 
@@ -19,6 +19,8 @@ Aktueller Stand: **v1.7 Admin Sync**
 - Export als JSON oder CSV
 - lokaler Fallback im Browser, falls D1 noch nicht verbunden ist
 - Outfit-Verwaltung ueber `outfits.json`
+- Admin-Oberflaeche unter `/admin.html`
+- versteckter Admin-Zugang ueber 7 Klicks/Taps auf den Versions-Badge
 
 ## v1.6 Notizen
 
@@ -27,10 +29,16 @@ Aktueller Stand: **v1.7 Admin Sync**
 - `sync.js` und `functions/api/state.js` bilden die gemeinsame Speicherung pro Name/Projekt ab.
 - `v1.6.1`: Tinder-Rechts-Swipe vergibt nur noch einen Tinder-Stern und setzt nicht mehr automatisch den Favorit-Haken.
 - `v1.7`: Bewertungen senden ein explizites Sync-Signal an D1; Outfits werden aus `outfits.json` geladen.
+- `v1.8`: Admin-UI zum Aktivieren, Bearbeiten, Ergaenzen und Speichern der Outfits in D1.
+- `v1.9`: Detailbild auf Handy groesser; Admin-Link ist aus der Button-Leiste entfernt und ueber 7 Taps auf die Version erreichbar.
 
 ## Outfits verwalten
 
-Die sichtbaren Bilder stehen in `outfits.json`.
+Die sichtbaren Bilder koennen unter `/admin.html` verwaltet werden. Die App laedt zuerst die gespeicherte D1-Konfiguration aus `/api/outfits`. Wenn dort noch nichts gespeichert ist, wird `outfits.json` als Fallback genutzt.
+
+Optional kann im Cloudflare Pages Projekt eine Environment Variable `ADMIN_KEY` gesetzt werden. Dann muss derselbe Key beim Speichern in der Admin-Oberflaeche eingegeben werden.
+
+Die Fallback-Liste steht in `outfits.json`.
 
 Ein Outfit ausblenden:
 
