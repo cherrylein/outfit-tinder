@@ -2,7 +2,7 @@
 
 Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 
-Aktueller Stand: **v1.10 Clean App**
+Aktueller Stand: **v1.11 Star Filter**
 
 ## Funktionen
 
@@ -19,6 +19,7 @@ Aktueller Stand: **v1.10 Clean App**
 - Outfit-Verwaltung ueber `outfits.json`
 - Admin-Oberflaeche unter `/admin.html`
 - versteckter Admin-Zugang ueber 7 Klicks/Taps auf den Versions-Badge
+- Uebersichtsfilter "Nur Sterne" fuer Outfits mit Tinder-Sternen
 
 ## v1.6 Notizen
 
@@ -30,6 +31,7 @@ Aktueller Stand: **v1.10 Clean App**
 - `v1.8`: Admin-UI zum Aktivieren, Bearbeiten, Ergaenzen und Speichern der Outfits in D1.
 - `v1.9`: Detailbild auf Handy groesser; Admin-Link ist aus der Button-Leiste entfernt und ueber 7 Taps auf die Version erreichbar.
 - `v1.10`: Export, Link kopieren und Bewertungen leeren aus der normalen App-Leiste entfernt; diese Werkzeuge liegen im Admin. Das Bildgroessen-Tool ist aus der normalen App entfernt.
+- `v1.11`: Button "Nur Sterne" in der Uebersicht, um nur Outfits mit Tinder-Sternen anzuzeigen.
 
 ## Outfits verwalten
 
