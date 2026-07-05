@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = "v1.6 Mobile Sync";
+  const VERSION = "v1.6.1 Mobile Sync";
   const REVIEW_KEY = "outfit-selection-v1";
   const USER_KEY = "outfit-selection-user-v1";
   const PROJECT_KEY = "outfit-selection-project-v1";
