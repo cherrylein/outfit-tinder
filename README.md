@@ -2,7 +2,7 @@
 
 Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 
-Aktueller Stand: **v1.9 Hidden Admin**
+Aktueller Stand: **v1.10 Clean App**
 
 ## Funktionen
 
@@ -14,9 +14,7 @@ Aktueller Stand: **v1.9 Hidden Admin**
 - gemeinsame Speicherung pro Projekt und Name ueber Cloudflare D1
 - gemeinsame Ergebnisansicht ueber "Alle Ergebnisse"
 - Meine Topliste fuer die lokale Auswahl
-- Link kopieren mit Projekt/User-Parametern
-- Bild kleiner/groesser Toggle fuer kleine Handy-Displays
-- Export als JSON oder CSV
+- lokale Bewertungstools im Admin statt in der normalen App-Leiste
 - lokaler Fallback im Browser, falls D1 noch nicht verbunden ist
 - Outfit-Verwaltung ueber `outfits.json`
 - Admin-Oberflaeche unter `/admin.html`
@@ -31,6 +29,7 @@ Aktueller Stand: **v1.9 Hidden Admin**
 - `v1.7`: Bewertungen senden ein explizites Sync-Signal an D1; Outfits werden aus `outfits.json` geladen.
 - `v1.8`: Admin-UI zum Aktivieren, Bearbeiten, Ergaenzen und Speichern der Outfits in D1.
 - `v1.9`: Detailbild auf Handy groesser; Admin-Link ist aus der Button-Leiste entfernt und ueber 7 Taps auf die Version erreichbar.
+- `v1.10`: Export, Link kopieren und Bewertungen leeren aus der normalen App-Leiste entfernt; diese Werkzeuge liegen im Admin. Das Bildgroessen-Tool ist aus der normalen App entfernt.
 
 ## Outfits verwalten
 
