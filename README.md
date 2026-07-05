@@ -2,7 +2,7 @@
 
 Kleine Web-App zur gemeinsamen Outfit-Auswahl.
 
-Aktueller Stand: **v1.6 Mobile Sync**
+Aktueller Stand: **v1.6.1 Mobile Sync**
 
 ## Funktionen
 
@@ -24,6 +24,7 @@ Aktueller Stand: **v1.6 Mobile Sync**
 - `mobile.css` verbessert das Handy-Layout, speziell Detailansicht, kleine Displays und Zoom-Situationen.
 - `app-enhancements.js` setzt die Versionsanzeige, ergaenzt Teilen/Topliste/Bildgroesse und fuegt Wischgesten in der Detailansicht hinzu.
 - `sync.js` und `functions/api/state.js` bilden die gemeinsame Speicherung pro Name/Projekt ab.
+- `v1.6.1`: Tinder-Rechts-Swipe vergibt nur noch einen Tinder-Stern und setzt nicht mehr automatisch den Favorit-Haken.
 
 ## Hosting
 
