@@ -166,6 +166,10 @@
       </div>
       <div class="tools">
         <a class="link-button" href="/">Zur App</a>
+        <button id="copyShareLink">Link kopieren</button>
+        <button id="exportJson">JSON Export</button>
+        <button id="exportCsv">CSV Export</button>
+        <button id="clearRatings" class="danger">Bewertungen leeren</button>
         <button id="addOutfit">Neues Outfit</button>
         <button id="saveOutfits" class="primary">Speichern</button>
         <button id="reloadOutfits">Neu laden</button>
@@ -186,7 +190,12 @@
     const list = document.getElementById("list");
     const status = document.getElementById("status");
     const search = document.getElementById("search");
+    const reviewKey = "outfit-selection-v1";
 
+    document.getElementById("copyShareLink").addEventListener("click", copyShareLink);
+    document.getElementById("exportJson").addEventListener("click", exportJson);
+    document.getElementById("exportCsv").addEventListener("click", exportCsv);
+    document.getElementById("clearRatings").addEventListener("click", clearRatings);
     document.getElementById("addOutfit").addEventListener("click", addOutfit);
     document.getElementById("saveOutfits").addEventListener("click", saveOutfits);
     document.getElementById("reloadOutfits").addEventListener("click", loadOutfits);
@@ -298,6 +307,99 @@
       });
       render();
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function copyShareLink() {
+      const url = new URL("/", location.href);
+      const project = localStorage.getItem("outfit-selection-project-v1") || "vader";
+      const user = localStorage.getItem("outfit-selection-user-v1") || "";
+      url.searchParams.set("project", project);
+      if (user) url.searchParams.set("user", user);
+
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        setStatus("Link kopiert.");
+      } catch {
+        prompt("Link kopieren", url.toString());
+      }
+    }
+
+    function exportJson() {
+      download("outfit-auswahl-bewertungen.json", "application/json", JSON.stringify(exportRows(), null, 2));
+      setStatus("JSON exportiert.");
+    }
+
+    function exportCsv() {
+      download("outfit-auswahl-bewertungen.csv", "text/csv", toCsv(exportRows()));
+      setStatus("CSV exportiert.");
+    }
+
+    async function clearRatings() {
+      if (!confirm("Lokale Bewertungen, Favoriten und Kommentare in diesem Browser wirklich loeschen?")) return;
+      localStorage.setItem(reviewKey, "{}");
+      window.dispatchEvent(new CustomEvent("outfit-reviews-changed", { detail: { key: reviewKey } }));
+      await syncReviews({});
+      setStatus("Bewertungen geleert.");
+    }
+
+    function exportRows() {
+      const reviews = readReviews();
+      return outfits.map(item => {
+        const review = reviews[item.id] || {};
+        return {
+          id: item.id,
+          name: item.name,
+          group: item.group,
+          file: item.file,
+          rating: review.rating || "",
+          tinderStars: review.tinderStars || 0,
+          rejectedInTinder: review.rejected ? "yes" : "no",
+          favorite: review.favorite ? "yes" : "no",
+          comment: review.comment || ""
+        };
+      });
+    }
+
+    function readReviews() {
+      try {
+        return JSON.parse(localStorage.getItem(reviewKey)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    async function syncReviews(state) {
+      const project = localStorage.getItem("outfit-selection-project-v1") || "vader";
+      const userName = localStorage.getItem("outfit-selection-user-v1") || "";
+      if (!userName) return;
+      try {
+        await fetch("/api/state", {
+          method: "POST",
+          headers: { "content-type": "application/json", "accept": "application/json" },
+          body: JSON.stringify({ project, userName, state })
+        });
+      } catch (error) {
+        console.warn("Could not sync cleared reviews:", error);
+      }
+    }
+
+    function download(filename, mime, content) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function toCsv(rows) {
+      if (!rows.length) return "";
+      const headers = Object.keys(rows[0]);
+      const cell = value => `"${String(value).replaceAll('"', '""')}"`;
+      return [headers.join(","), ...rows.map(row => headers.map(header => cell(row[header])).join(","))].join("\n");
     }
 
     function nextId() {
