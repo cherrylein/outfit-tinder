@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Outfit Admin</title>
+  <style>
+    :root {
+      --bg: #f6f1ec;
+      --panel: #fff;
+      --ink: #1d1715;
+      --muted: #756b65;
+      --line: #ddd3cc;
+      --accent: #ca4f45;
+      --soft: #eee5de;
+      --good: #1f7a4d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      border-bottom: 1px solid var(--line);
+      background: rgba(246, 241, 236, .96);
+      backdrop-filter: blur(12px);
+    }
+    .bar {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+    .sub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+    button, input, textarea {
+      font: inherit;
+      color: inherit;
+    }
+    button, .link-button {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 7px 10px;
+      background: var(--panel);
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 9px;
+      background: #fff;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px;
+    }
+    .status {
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+    .item {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: var(--panel);
+    }
+    .thumb {
+      width: 82px;
+      aspect-ratio: 2 / 3;
+      border-radius: 6px;
+      object-fit: cover;
+      object-position: top center;
+      background: var(--soft);
+    }
+    .fields {
+      display: grid;
+      grid-template-columns: 86px 1fr 130px;
+      gap: 8px;
+      align-items: start;
+    }
+    .wide { grid-column: 1 / -1; }
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    label.check {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    label.check input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--good);
+    }
+    .ghost {
+      opacity: .48;
+    }
+    .danger {
+      color: #9f2f2f;
+    }
+    @media (max-width: 760px) {
+      .item {
+        grid-template-columns: 70px minmax(0, 1fr);
+      }
+      .thumb { width: 70px; }
+      .fields {
+        grid-template-columns: 1fr;
+      }
+      .tools button,
+      .tools .link-button {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div>
+        <h1>Outfit Admin</h1>
+        <div class="sub">Bilder aktivieren, ausblenden, bearbeiten oder neue Outfits ergaenzen.</div>
+      </div>
+      <div class="tools">
+        <a class="link-button" href="/">Zur App</a>
+        <button id="addOutfit">Neues Outfit</button>
+        <button id="saveOutfits" class="primary">Speichern</button>
+        <button id="reloadOutfits">Neu laden</button>
+        <input id="search" placeholder="Suchen..." style="max-width:220px">
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="list" id="list"></div>
+  </main>
+
+  <script>
+    let outfits = [];
+    let adminKey = localStorage.getItem("outfit-admin-key") || "";
+
+    const list = document.getElementById("list");
+    const status = document.getElementById("status");
+    const search = document.getElementById("search");
+
+    document.getElementById("addOutfit").addEventListener("click", addOutfit);
+    document.getElementById("saveOutfits").addEventListener("click", saveOutfits);
+    document.getElementById("reloadOutfits").addEventListener("click", loadOutfits);
+    search.addEventListener("input", render);
+
+    loadOutfits();
+
+    async function loadOutfits() {
+      setStatus("Lade Outfits...");
+      try {
+        let data = [];
+        const api = await fetch("/api/outfits", { cache: "no-store" });
+        if (api.ok) {
+          const payload = await api.json();
+          data = payload.outfits || [];
+        }
+        if (!data.length) {
+          const fallback = await fetch("/outfits.json", { cache: "no-store" });
+          data = await fallback.json();
+        }
+        outfits = data.map(normalizeOutfit);
+        setStatus(`${outfits.length} Outfits geladen.`);
+        render();
+      } catch (error) {
+        setStatus("Konnte Outfits nicht laden: " + error.message, true);
+      }
+    }
+
+    function normalizeOutfit(item, index = 0) {
+      return {
+        active: item.active !== false,
+        id: String(item.id ?? index).padStart(2, "0"),
+        file: item.file || "",
+        name: item.name || "",
+        group: item.group || "Sonstige",
+        note: item.note || ""
+      };
+    }
+
+    function render() {
+      const q = search.value.trim().toLowerCase();
+      const rows = outfits.filter(item => {
+        if (!q) return true;
+        return [item.id, item.file, item.name, item.group, item.note].join(" ").toLowerCase().includes(q);
+      });
+
+      list.innerHTML = rows.map(item => `
+        <article class="item ${item.active ? "" : "ghost"}" data-id="${escapeHtml(item.id)}">
+          <img class="thumb" src="${escapeHtml(item.file)}" alt="">
+          <div class="fields">
+            <input data-field="id" value="${escapeHtml(item.id)}" aria-label="ID">
+            <input data-field="name" value="${escapeHtml(item.name)}" aria-label="Name" placeholder="Name">
+            <input data-field="group" value="${escapeHtml(item.group)}" aria-label="Gruppe" placeholder="Gruppe">
+            <input class="wide" data-field="file" value="${escapeHtml(item.file)}" aria-label="Bildpfad" placeholder="images/dateiname.jpg">
+            <textarea class="wide" data-field="note" rows="2" aria-label="Notiz" placeholder="Notiz">${escapeHtml(item.note)}</textarea>
+            <div class="wide row">
+              <label class="check"><input data-field="active" type="checkbox" ${item.active ? "checked" : ""}> aktiv</label>
+              <button type="button" data-action="duplicate">Duplizieren</button>
+              <button type="button" data-action="remove" class="danger">Aus Liste loeschen</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      list.querySelectorAll(".item").forEach(node => {
+        node.addEventListener("input", event => updateItem(node.dataset.id, event.target));
+        node.addEventListener("click", event => handleAction(node.dataset.id, event.target));
+      });
+    }
+
+    function updateItem(id, target) {
+      const item = outfits.find(entry => entry.id === id);
+      if (!item || !target.dataset.field) return;
+      const field = target.dataset.field;
+      item[field] = field === "active" ? target.checked : target.value;
+      if (field === "id") {
+        target.closest(".item").dataset.id = item.id;
+      }
+      if (field === "file") {
+        const img = target.closest(".item").querySelector(".thumb");
+        img.src = item.file;
+      }
+    }
+
+    function handleAction(id, target) {
+      const action = target.dataset.action;
+      if (!action) return;
+      const index = outfits.findIndex(entry => entry.id === id);
+      if (index < 0) return;
+      if (action === "remove" && confirm("Diesen Eintrag wirklich aus der Liste loeschen? Alte Bewertungen bleiben in D1, sind aber ohne Outfit nicht mehr sichtbar.")) {
+        outfits.splice(index, 1);
+        render();
+      }
+      if (action === "duplicate") {
+        const copy = { ...outfits[index], id: nextId(), name: `${outfits[index].name} Kopie`, active: true };
+        outfits.splice(index + 1, 0, copy);
+        render();
+      }
+    }
+
+    function addOutfit() {
+      outfits.unshift({
+        active: true,
+        id: nextId(),
+        file: "images/",
+        name: "Neues Outfit",
+        group: "Neu",
+        note: ""
+      });
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function nextId() {
+      const used = new Set(outfits.map(item => String(item.id)));
+      let n = 0;
+      while (used.has(String(n).padStart(2, "0"))) n += 1;
+      return String(n).padStart(2, "0");
+    }
+
+    async function saveOutfits() {
+      if (!adminKey) {
+        adminKey = prompt("Admin-Key, falls in Cloudflare gesetzt. Leer lassen, wenn keiner gesetzt ist.") || "";
+        localStorage.setItem("outfit-admin-key", adminKey);
+      }
+      setStatus("Speichere...");
+      try {
+        const response = await fetch("/api/outfits", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-admin-key": adminKey
+          },
+          body: JSON.stringify({ outfits })
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+        outfits = payload.outfits.map(normalizeOutfit);
+        setStatus(`${payload.count} Outfits gespeichert.`);
+        render();
+      } catch (error) {
+        if (String(error.message).includes("Admin key")) {
+          localStorage.removeItem("outfit-admin-key");
+          adminKey = "";
+        }
+        setStatus("Speichern fehlgeschlagen: " + error.message, true);
+      }
+    }
+
+    function setStatus(message, isError = false) {
+      status.textContent = message;
+      status.classList.toggle("danger", isError);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+  </script>
+</body>
+</html>
