@@ -263,7 +263,7 @@
       <div>
         <div class="title-row">
           <h1>Outfit Auswahl</h1>
-          <span class="version-badge">v1.6.1 Mobile Sync</span>
+          <span class="version-badge">v1.7 Admin Sync</span>
         </div>
         <div class="subtitle">Gemeinsam bewerten, kommentieren und Favoriten finden. Mit Handy-Detailansicht und Cloud-Speicherung pro Name.</div>
       </div>
@@ -296,7 +296,7 @@
   </div>
 
   <script>
-    const outfits = [
+    let outfits = [
       { id: "00", file: "images/00-armor-outfit-dark.jpg", name: "Armor Outfit Dunkel", group: "Armor", note: "Erster Panzerlook im dunklen Licht." },
       { id: "01", file: "images/01-armor-outfit-deep-v.jpg", name: "Armor Deep V", group: "Armor", note: "Mehr Dekollete unter dem Schulterpanzer." },
       { id: "02", file: "images/02-armor-outfit-bright.jpg", name: "Armor Kataloglicht", group: "Armor", note: "Helleres Licht, Panzer und Outfit besser lesbar." },
@@ -354,8 +354,33 @@
     function loadReviews() {
       try { return JSON.parse(localStorage.getItem(storeKey)) || {}; } catch { return {}; }
     }
-    function saveReviews() { localStorage.setItem(storeKey, JSON.stringify(reviews)); }
+    function saveReviews() {
+      localStorage.setItem(storeKey, JSON.stringify(reviews));
+      window.dispatchEvent(new CustomEvent("outfit-reviews-changed", { detail: { key: storeKey } }));
+    }
     function reviewFor(id) { return reviews[id] || { rating: 0, favorite: false, comment: "", tinderStars: 0, rejected: false }; }
+    async function loadOutfits() {
+      try {
+        const response = await fetch("/outfits.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("outfits.json konnte nicht geladen werden");
+        const data = await response.json();
+        if (!Array.isArray(data) || !data.length) throw new Error("outfits.json ist leer");
+        outfits = data
+          .filter(item => item && item.active !== false)
+          .map((item, index) => ({
+            id: String(item.id ?? index).padStart(2, "0"),
+            file: item.file,
+            name: item.name || item.file || "Outfit " + (index + 1),
+            group: item.group || "Sonstige",
+            note: item.note || ""
+          }))
+          .filter(item => item.file);
+        if (outfits.length && !outfits.some(item => item.id === selectedId)) selectedId = outfits[0].id;
+      } catch (error) {
+        console.warn("Outfit config fallback:", error);
+      }
+    }
+
     function filteredOutfits() { return activeGroup === "Alle" ? outfits : outfits.filter(item => item.group === activeGroup); }
     function isMobileLayout() { return window.matchMedia("(max-width: 980px)").matches; }
 
@@ -429,6 +454,10 @@
     }
 
     function renderDetail() {
+      if (!outfits.length) {
+        detail.innerHTML = '<div class="review"><h2>Keine Outfits aktiv</h2><div class="desc">Aktiviere mindestens ein Outfit in outfits.json.</div></div>';
+        return;
+      }
       if (!detailReady) initDetail();
       const item = outfits.find(entry => entry.id === selectedId) || outfits[0];
       const review = reviewFor(item.id);
@@ -555,7 +584,7 @@
     function resetSwipeCard(card) { card.style.transform = ""; document.getElementById("acceptBadge").style.opacity = 0; document.getElementById("rejectBadge").style.opacity = 0; }
     function escapeHtml(value) { return String(value || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"); }
     function render() { renderFilters(); renderGrid(); renderDetail(); }
-    render();
+    loadOutfits().then(render);
   </script>
   <script src="/sync.js" defer></script>
   <script src="/app-enhancements.js" defer></script>
