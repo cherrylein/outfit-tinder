@@ -1,9 +1,10 @@
 (() => {
-  const VERSION = "v1.10 Clean App";
+  const VERSION = "v1.11 Star Filter";
   const REVIEW_KEY = "outfit-selection-v1";
   const USER_KEY = "outfit-selection-user-v1";
   const PROJECT_KEY = "outfit-selection-project-v1";
   const COMPACT_KEY = "outfit-detail-compact-image-v1";
+  const STAR_FILTER_KEY = "outfit-filter-stars-only-v1";
 
   document.addEventListener("DOMContentLoaded", initEnhancements);
   if (document.readyState !== "loading") initEnhancements();
@@ -17,6 +18,7 @@
     restoreCompactMode();
     addUtilityActions();
     moveAdminActionsOutOfApp();
+    addStarFilterControl();
     addDetailGestures();
   }
 
@@ -90,6 +92,88 @@
 
     const visibleAdminLink = document.querySelector('.actions .button-link[href="/admin.html"]');
     if (visibleAdminLink) visibleAdminLink.remove();
+  }
+
+  function addStarFilterControl() {
+    const filters = document.getElementById("filters");
+    if (!filters || document.getElementById("starFilterToggle")) return;
+
+    injectStarFilterStyles();
+
+    const row = document.createElement("div");
+    row.className = "star-filter-row";
+    row.innerHTML = `
+      <button id="starFilterToggle" type="button">Nur Sterne</button>
+      <span id="starFilterStatus"></span>
+    `;
+    filters.parentElement.insertBefore(row, filters);
+
+    document.getElementById("starFilterToggle").addEventListener("click", () => {
+      const next = localStorage.getItem(STAR_FILTER_KEY) !== "1";
+      localStorage.setItem(STAR_FILTER_KEY, next ? "1" : "0");
+      applyStarFilter();
+    });
+
+    window.addEventListener("outfit-reviews-changed", applyStarFilter);
+
+    const grid = document.getElementById("grid");
+    if (grid) {
+      new MutationObserver(applyStarFilter).observe(grid, { childList: true });
+    }
+
+    window.setTimeout(applyStarFilter, 0);
+  }
+
+  function applyStarFilter() {
+    const active = localStorage.getItem(STAR_FILTER_KEY) === "1";
+    const button = document.getElementById("starFilterToggle");
+    const status = document.getElementById("starFilterStatus");
+    const cards = Array.from(document.querySelectorAll(".card[data-id]"));
+    const reviews = readReviews();
+    let visibleWithStars = 0;
+
+    cards.forEach(card => {
+      const review = reviews[card.dataset.id] || {};
+      const hasStars = Number(review.tinderStars || 0) > 0;
+      if (hasStars) visibleWithStars += 1;
+      card.hidden = active && !hasStars;
+    });
+
+    if (button) {
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+      button.textContent = active ? "Alle anzeigen" : "Nur Sterne";
+    }
+    if (status) {
+      status.textContent = active
+        ? `${visibleWithStars} mit Sternen sichtbar`
+        : `${visibleWithStars} mit Sternen`;
+    }
+  }
+
+  function injectStarFilterStyles() {
+    if (document.getElementById("starFilterStyles")) return;
+    const style = document.createElement("style");
+    style.id = "starFilterStyles";
+    style.textContent = `
+      .star-filter-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .star-filter-row button.active {
+        background: #1d1715;
+        border-color: #1d1715;
+        color: #fff;
+      }
+      #starFilterStatus {
+        color: #756b65;
+        font-size: 12px;
+      }
+    `;
+    document.head.appendChild(style);
   }
 
   async function copyShareLink() {
