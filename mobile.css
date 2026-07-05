@@ -25,27 +25,21 @@
   }
 
   .actions {
-    gap: 6px;
+    gap: 5px;
   }
 
-  .actions button {
-    min-height: 40px;
-    padding: 8px 10px;
-    font-size: 13px;
+  .actions button,
+  .actions .button-link {
+    min-height: 34px;
+    padding: 7px 8px;
+    font-size: 12px;
   }
 
   main {
     padding: 10px;
   }
 
-  .filters {
-    gap: 6px;
-    margin-bottom: 10px;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 3px;
-    -webkit-overflow-scrolling: touch;
-  }
+  .filters { display: none; }
 
   .chip {
     flex: 0 0 auto;
