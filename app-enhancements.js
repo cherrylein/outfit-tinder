@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = "v1.7 Admin Sync";
+  const VERSION = "v1.9 Hidden Admin";
   const REVIEW_KEY = "outfit-selection-v1";
   const USER_KEY = "outfit-selection-user-v1";
   const PROJECT_KEY = "outfit-selection-project-v1";
@@ -13,6 +13,7 @@
     document.documentElement.dataset.enhancedV16 = "true";
 
     updateVersionBadge();
+    addHiddenAdminUnlock();
     restoreCompactMode();
     addUtilityActions();
     addDetailGestures();
@@ -21,6 +22,26 @@
   function updateVersionBadge() {
     const badge = document.querySelector(".version-badge");
     if (badge) badge.textContent = VERSION;
+  }
+
+  function addHiddenAdminUnlock() {
+    const badge = document.querySelector(".version-badge");
+    if (!badge || badge.dataset.adminUnlockReady) return;
+    badge.dataset.adminUnlockReady = "true";
+
+    let taps = 0;
+    let resetTimer = 0;
+    badge.style.cursor = "pointer";
+    badge.addEventListener("click", () => {
+      taps += 1;
+      window.clearTimeout(resetTimer);
+      if (taps >= 7) {
+        taps = 0;
+        location.href = "/admin.html";
+        return;
+      }
+      resetTimer = window.setTimeout(() => { taps = 0; }, 1800);
+    });
   }
 
   function restoreCompactMode() {
